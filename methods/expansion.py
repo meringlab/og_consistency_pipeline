@@ -7,11 +7,11 @@ import shelve
 from collections import defaultdict, OrderedDict, Counter
 from ete3 import Tree
 
-from utils import data_sources as ds
-from utils import eggNOG_utils as eu
-from utils import file_utils as fu
+from .utils import data_sources as ds
+from .utils import eggNOG_utils as eu
+from .utils import file_utils as fu
 
-from hgt_utils import get_protein_fasta, load_v4clades
+from .hgt_utils import get_protein_fasta, load_v4clades
 
 class ExpandedNOG:
     # 'Class representing an expanded NOG'
@@ -209,7 +209,7 @@ class ExpandedNOG:
                                                                         len(nog_proteins & higher_proteins)))
                     
                     split_nogs = self.partial_split(higher_id,nog_id,split_id)
-                    split_counter += len([x for x,y in split_nogs.iteritems() if len(y) > 1])
+                    split_counter += len([x for x,y in split_nogs.items() if len(y) > 1])
                     split_results.update(split_nogs)
         
         return split_results
@@ -676,7 +676,7 @@ class ExpandedNOG:
     #Simple solution, protein tracking would be better    
     def get_level_species(self, nog_species, test_lca=False):
         lca_level_finder = eu.eggNOG_lca_finder()
-        lca_level = lca_level_finder.find_level(nog_species.keys())
+        lca_level = lca_level_finder.find_level(list(nog_species.keys()))
         
         if test_lca:
             # testing the LCA implies ensuring that the species
