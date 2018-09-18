@@ -227,10 +227,10 @@ def direct(mafft_cmd, fasttree_cmd, tree_job):
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
     
-    tree_nw, err = p.communicate(input_fasta)
+    tree_nw, err = p.communicate(input_fasta.encode())
     t_end = time.time()
     
-    return (nog_id, t_end - t_start, tree_nw)
+    return (nog_id, t_end - t_start, tree_nw.decode())
 
 def direct_fast(tree_job):
     mafft_cmd = MAFFT_WEB + MAFFT_AUTO_OPTION

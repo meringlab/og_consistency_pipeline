@@ -489,9 +489,9 @@ def reconcile(job, return_tree=False):
     f2, f2_name = tempfile.mkstemp(dir='./')
     try:
         # add info 
-        os.write(f1, geneTree)
+        os.write(f1, geneTree.encode())
         os.close(f1)
-        os.write(f2, speciesTree)
+        os.write(f2, speciesTree.encode())
         os.close(f2)
         
         ### [TODO] separate NOTUNG specific code into separate function
