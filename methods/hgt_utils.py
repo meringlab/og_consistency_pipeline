@@ -5,14 +5,14 @@ import sys
 import time
 from glob import glob
 import shelve
-import cPickle as pickle
+import pickle
 
 from ete3 import Tree
 from collections import defaultdict, Counter
 
-from utils import eggNOG_utils as eu
-from utils import data_sources as ds
-from utils import file_utils as fu
+from .utils import eggNOG_utils as eu
+from .utils import data_sources as ds
+from .utils import file_utils as fu
 
 V4_PICKLE_DIR = os.path.join(ds.EGGNOG_OUTPUT,'pickles')
 V4_FASTA_DIR = ds.EGGNOGv4_FASTA_DIR
@@ -812,7 +812,7 @@ class HgtTreeClassifier:
             
             if(self.verbose):
                 self.report_classification()
-                print "acceptors to resolve:\t%s"%new_acceptors
+                print("acceptors to resolve:\t%s"%new_acceptors)
             
             if new_acceptors:
                 self.assign_acceptors(new_acceptors,gTree)
