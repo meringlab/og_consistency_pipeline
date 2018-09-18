@@ -12,7 +12,7 @@ def splits_sampling(split_species, paralogs, sample_size, sample=set(), sample_s
     species_with_paralogs = {x for x,s in paralogs.items() if len(s) > 1}
     
     #shuffle splits to avoid biasing sampling by order
-    shuffled_split_ids = split_species.keys()
+    shuffled_split_ids = list(split_species.keys())
     random.shuffle(shuffled_split_ids)
 
     for split_id in shuffled_split_ids:
@@ -91,7 +91,7 @@ def combined_sampling(split_species,paralogs,level_species,sample_size):
     species_no = sample_size / 3
     
     # 1. choose randomly two levels
-    for level_id in random.sample(level_species.keys(),2):
+    for level_id in random.sample(list(level_species.keys()),2):
         # 2. choose up to 3 species from each level
         species = random.sample(level_species[level_id],min(len(level_species[level_id]),species_no))
         # 3. choose 1 protein from each species and level
@@ -100,7 +100,7 @@ def combined_sampling(split_species,paralogs,level_species,sample_size):
             sample.add(protein_id)
     
     # 1. choose randomly two splits
-    for split_id in random.sample(split_species.keys(),2):
+    for split_id in random.sample(list(split_species.keys()),2):
         # 2. choose up to 3 species from each split
         species = random.sample(split_species[split_id],min(len(split_species[split_id]),species_no))
         # 3. choose 1 protein from each species and split
@@ -111,7 +111,7 @@ def combined_sampling(split_species,paralogs,level_species,sample_size):
     
     attempts = sample_size
     while len(sample) < sample_size and attempts:
-        species_id = random.sample(paralogs.keys(),1)[0]
+        species_id = random.sample(list(paralogs.keys()),1)[0]
         protein_id = random.sample(paralogs[species_id],1)[0]
         sample.add(protein_id)
         attempts -= 1
@@ -183,7 +183,7 @@ class InconsistencySampler:
             elif self.sampling_method == "combined":
                 sequences_to_extract = combined_sampling(split_species,paralogs,level_species,self.sample_size)
             else:
-                print "Unknown method %s"%self.sampling_method
+                print("Unknown method %s"%self.sampling_method)
                 sys.exit()
             
             frozen_sample = frozenset(sequences_to_extract)
@@ -213,7 +213,7 @@ class InconsistencySampler:
                 sequences_to_extract = list(sequences_to_extract)
                 random.shuffle(sequences_to_extract)
                 for protein_id in sequences_to_extract:
-                    assert protein_id in fasta_cache, '%s not found in %s from %s'%(protein_id,fasta_cache.keys(),sequences_to_extract)
+                    assert protein_id in fasta_cache, '%s not found in %s from %s'%(protein_id,list(fasta_cache.keys()),sequences_to_extract)
                     fasta_seq = fasta_cache[protein_id]
                     sample_sequences[i] += fasta_seq
         
