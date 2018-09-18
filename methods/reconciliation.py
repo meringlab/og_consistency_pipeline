@@ -14,7 +14,7 @@ from ete3 import Tree
 from ete3.parser.newick import NewickError
 from multiprocessing import Pool
 
-from utils import data_sources as ds
+from .utils import data_sources as ds
 
 EGGNOGv4_SPECIES_TREE = os.path.join(ds.EGGNOG_OUTPUT,"eggNOG_species_tree.nw")
 
@@ -98,7 +98,7 @@ mv $TMPFILE $OUTFILE
 
 def get_tree_chunks(tree_jobs,n):
     random.shuffle(tree_jobs)
-    return [tree_jobs[i:i+n] for i in xrange(0,len(tree_jobs),n)]
+    return [tree_jobs[i:i+n] for i in range(0,len(tree_jobs),n)]
 
 def write_reconciliation_tasks(higher_level,tree_computations,chunk_no = 1,min_size=1,max_size=50):
 
@@ -306,7 +306,7 @@ def prune_species_tree(gene_tree, cached_species_tree=None, keep_polytomies=Fals
     species_list = {x.split('_')[0] for x in leaf_names}
     species_list = list(species_list)
 
-    species_ids = {filter(str.isdigit,x):x for x in species_list}
+    species_ids = {''.join(filter(str.isdigit,x)):x for x in species_list}
 
     #big species tree
     if cached_species_tree:
@@ -320,7 +320,7 @@ def prune_species_tree(gene_tree, cached_species_tree=None, keep_polytomies=Fals
     #prune to subset
     # common_ancestor.prune(species_ids) # slower method
     leaves = {x.name:x for x in common_ancestor.get_leaves()}
-    to_remove = leaves.viewkeys() - species_ids.viewkeys()
+    to_remove = leaves.keys() - species_ids.keys()
     for species_id in to_remove:
         if species_id in leaves:
             leaves[species_id].delete()
@@ -605,8 +605,8 @@ if __name__ == '__main__':
             if args.test_annotation:
                 annotated_tree,split_index = results
                 print('%s\t%s\t%.3f'%(nog_id,annotated_tree.event,split_index))
-                print annotated_tree.get_ascii(
-                    attributes=["name","event","split"])
+                print(annotated_tree.get_ascii(
+                    attributes=["name","event","split"]))
             else:
                 root_event,split_index = results
                 print("%s\t%s\t%.5f"%(nog_id, root_event, split_index))
