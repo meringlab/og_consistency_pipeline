@@ -2,7 +2,7 @@
 # expanded NOGs consistent
 
 import time
-from utils import eggNOG_utils as eu
+from .utils import eggNOG_utils as eu
 from collections import defaultdict, Counter
 
 NOG_PREFIXES = {
@@ -35,7 +35,7 @@ def apply_solutions(job, debug=False):
     
     # 0a. reduce exNOG complexity by splitting weak connections in advance (<transfer_thr)
     split_results = exNOG.pre_split(cogs=cog_intersection)
-    for nog_id, nog_proteins in split_results.iteritems():
+    for nog_id, nog_proteins in split_results.items():
         if len(nog_proteins) > 1:
             new_nog_counter[higher_level] += 1
         else:
@@ -120,7 +120,7 @@ def apply_solutions(job, debug=False):
         
         if debug:
             t_start = time.clock()
-            print("\nit.%d (%d): "%(level_iter,len(new_inconsistencies))),
+            print("\nit.%d (%d): "%(level_iter,len(new_inconsistencies)), end=' ')
             level_iter += 1
         
         for inconsistent_nog in new_inconsistencies:
@@ -140,13 +140,13 @@ def apply_solutions(job, debug=False):
                         new_nog_counter[level_id] += 1
         
         if debug:
-            print(time.clock()-t_start),
+            print(time.clock()-t_start, end=' ')
             t_start = time.clock()
         
         new_inconsistencies = exNOG.find_inconsistencies()
         
         if debug:
-            print(' (r.%.3f)'%(time.clock()-t_start)),
+            print(' (r.%.3f)'%(time.clock()-t_start), end=' ')
     
     # 5. Obtain the new consistent definition of the expanded NOG without singletons     
     nog_definitions = exNOG.get_protein_mapping_wo_singletons(int) #[TODO] int ref
