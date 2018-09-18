@@ -759,7 +759,7 @@ class ExpandedNOG:
                 nog_label = ''
                 split_size = len(nog_labels)
                 for i in reversed(range(3)):
-                    i_size = split_size/(26 ** i)
+                    i_size = split_size//(26 ** i)
                     nog_label += chr(ord('A') + i_size)
                     split_size-= i_size * (26 ** i)
                 
