@@ -6,7 +6,7 @@ import subprocess
 
 from ete3 import Tree
 
-from utils import data_sources as ds
+from .utils import data_sources as ds
 
 ##
 CHUNK_FOLDER_SUFFIX="fasta_chunks"
@@ -95,7 +95,7 @@ mv $TMPFILE $OUTFILE
 
 def get_tree_chunks(tree_jobs,n):
     random.shuffle(tree_jobs)
-    return [tree_jobs[i:i+n] for i in xrange(0,len(tree_jobs),n)]
+    return [tree_jobs[i:i+n] for i in range(0,len(tree_jobs),n)]
     # does this cover all?
 
 def write_tree_tasks(higher_level,tree_jobs,chunk_no = 1,min_size=1,max_size=50):
