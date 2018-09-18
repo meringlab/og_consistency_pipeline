@@ -13,8 +13,8 @@ import sys
 import ast
 import gzip
 
-import file_utils
-import data_sources as ds
+from . import file_utils
+from . import data_sources as ds
 
 def loadBigProteinIndexDict():
     
@@ -52,7 +52,7 @@ def getSpecies2CladeDict(og_label):
         ds.EGGNOGv4_COMPUTATIONS,og_label)
     
     if(not os.path.exists(og_file)):
-        print "OG label %s not found in %s please verify correctness!"%(og_label,og_file)
+        print("OG label %s not found in %s please verify correctness!"%(og_label,og_file))
         sys.exit()
         
     #dictionary to contain the species_and_clades.txt file
@@ -70,13 +70,13 @@ def getSpecies2CladeDict(og_label):
 def read_NOG_species():
     """Return all available species at the highest eggNOG level, i.e. 'NOG_COG'"""
     specie2clade = getSpecies2CladeDict('NOG_COG')
-    return specie2clade.keys()
+    return list(specie2clade.keys())
 
 
 def read_ids(og_label):
     """Return all available species at a given eggNOG level, e.g. 'biNOG'"""
     id2clade = getSpecies2CladeDict(og_label)
-    return id2clade.keys()
+    return list(id2clade.keys())
 
 def read_tsv_dict(
     file_name,field_no = 2,type1 = str, type2 = str,
@@ -347,7 +347,7 @@ def compute_short_names(short_length=5):
     
     for species_id,species_name in eggNOG_names.items():
         if 'NOG' not in species_name:
-            alpha_name = filter(str.isalpha, species_name)
+            alpha_name = ''.join(filter(str.isalpha, species_name))
             assert len(alpha_name) > short_length, 'Chosen length not compatible with %s'%species_name
             short_names[str(species_id)] = alpha_name[:short_length]
             
@@ -453,7 +453,7 @@ def read_species_prot(specie_id):
     
     species_proteins = read_tsv_dict(input_file, 2, str, int, REVERSE_ORDER = True)
     
-    return species_proteins.keys()
+    return list(species_proteins.keys())
 
 def read_species_prot_full(specie_id):
     """read full name as key e.g. dict["9606.ENSP00000001146"] = 1842113"""
@@ -471,7 +471,7 @@ def read_species_prot_ids(specie_id):
     
     species_proteins = read_tsv_dict(input_file, 2, str, int, REVERSE_ORDER = True)
     
-    return species_proteins.keys()
+    return list(species_proteins.keys())
 
 def read_species_prot_int_2_str(specie_id):
     """read integer id as key e.g. dict[1842113] = "9606.ENSP00000001146"""
@@ -513,7 +513,7 @@ def printListTree(node, tree, depth = 0):
         tree = dictionary representing a tree, i.e. dict[child] = parent
     """
     
-    print "\t" * depth, node
+    print("\t" * depth, node)
 
     if node in tree:
         node_list = tree[node]
@@ -527,9 +527,9 @@ def printListTree_withNames(node, tree, name_dict, depth = 0):
     integer id.
     """
     if(node in name_dict):
-        print "\t" * depth, name_dict[node], "[", node, "]"
+        print("\t" * depth, name_dict[node], "[", node, "]")
     else:
-        print "\t" * depth, node
+        print("\t" * depth, node)
 
     if node in tree:
         node_ids = tree[node]
