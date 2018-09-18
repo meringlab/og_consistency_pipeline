@@ -776,7 +776,7 @@ if __name__ == '__main__':
             history_path = '%d.nog_history.tsv'%higher_level
             with open(history_path,'w') as f:
                 for consistent_id in level_history:
-                    for old_id, new_ids in level_history[consistent_id].iteritems():
+                    for old_id, new_ids in level_history[consistent_id].items():
                         f.write('%d\t%d\t%s\n'%(consistent_id,old_id,','.join([str(x) for x in new_ids])))
                 
             # write a copy of the definition to disk before testing
@@ -826,7 +826,7 @@ if __name__ == '__main__':
             
         # sys.stderr.write('Inconsistencies to process: %s\n'%inconsistencies)
         # sys.stderr.write('Simple merges to process: %s\n'%simple_merges)
-        # sys.stderr.write('Total # of inconsistencies: %s\n'%sum(inconsistencies.itervalues()))
-        # sys.stderr.write('Total # of simple merges: %s\n'%sum(simple_merges.itervalues()))
+        # sys.stderr.write('Total # of inconsistencies: %s\n'%sum(inconsistencies.values()))
+        # sys.stderr.write('Total # of simple merges: %s\n'%sum(simple_merges.values()))
         # # [TODO] add stats about split and join 
         # 
