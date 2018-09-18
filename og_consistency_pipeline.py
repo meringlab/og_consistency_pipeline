@@ -275,8 +275,7 @@ if __name__ == '__main__':
                 sys.stderr.write("Started expanding %s [%s] @ %s\n"%(
                     nog_level,eggNOG_names[nog_level],time.strftime("%Y%m%d_%H%M%S",time.localtime())))
                 
-                nog_names = nog_proteins[nog_level].keys()
-                nog_names = sorted(nog_names)
+                nog_names = sorted(nog_proteins[nog_level])
                 
                 sys.stderr.write('Analyzing %d nogs for consistency\n'%len(nog_names))
                 sys.stderr.write('Covering a total of %d proteins\n'%len(protein_nogs[nog_level]))  
@@ -306,7 +305,7 @@ if __name__ == '__main__':
                             cog_intersection = set()
                             if higher_level in [2,2759,2157]:
                                 # do not merge COG/KOGs
-                                cog_intersection = cogs & exNOG.higher_nogs.viewkeys()
+                                cog_intersection = cogs & exNOG.higher_nogs.keys()
                                 has_cogs = len(cog_intersection) > 1
                                     
                             # reduce problem complexity by pre-splitting based on threshold
@@ -482,7 +481,7 @@ if __name__ == '__main__':
                 p.close()
                 p.join()
             else:
-                tree_computations = map(tree_method, tree_jobs)
+                tree_computations = list(map(tree_method, tree_jobs))
             
             stop = time.time()
             total = stop - start
@@ -574,7 +573,7 @@ if __name__ == '__main__':
                 p.close()
                 p.join()
             else:
-                reconciliations = map(reconciliation_method,reconciliation_jobs)
+                reconciliations = list(map(reconciliation_method,reconciliation_jobs))
                 
             # flag incomplete reconciliations
             to_delete = []
@@ -641,7 +640,7 @@ if __name__ == '__main__':
                 cog_intersection = set()
                 if higher_level in [2,2759,2157]:
                     # do not merge COG/KOGs
-                    cog_intersection = cogs & exNOG.higher_nogs.viewkeys()
+                    cog_intersection = cogs & exNOG.higher_nogs.keys()
                 
                 # extract relevant reconciliations
                 for inconsistent_nog in inconsistencies[nog_id]:
@@ -678,7 +677,7 @@ if __name__ == '__main__':
                 p.close()
                 p.join()
             else:
-                consistent_nogs = map(join.apply_solutions,consistency_jobs)
+                consistent_nogs = list(map(join.apply_solutions,consistency_jobs))
             
             stop = time.time()
             total = stop - start
@@ -767,7 +766,7 @@ if __name__ == '__main__':
                             old_definition[protein_id] = nog_mapper[nog_id]
                 
                 # update the ids in the nog_history
-                for old_id, new_ids in nog_history.iteritems():
+                for old_id, new_ids in nog_history.items():
                     level_history[consistent_id][old_id] = [nog_mapper[x] if x in nog_mapper else x for x in new_ids]
                 
                 #for old_id,new_id in nog_mapper.items():
