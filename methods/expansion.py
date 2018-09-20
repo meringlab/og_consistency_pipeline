@@ -223,7 +223,9 @@ class ExpandedNOG:
             transfer_min = max(len(nog_proteins) * transfer_thr,2) # 2 be the minimum to merge singletons
             higher_ids = sorted(self.lower_nogs[nog_id])
             transfers = Counter({x:len(nog_proteins & self.expanded_nog[x]) for x in higher_ids})
-            top_id, top_size = transfers.most_common(1)[0]
+            transfers_ranked = transfers.most_common()
+            _, top_size = transfers_ranked[0]
+            top_id = sorted(x for x,y in transfers_ranked if y == top_size)[0] # choose numerical order in case of ties
             org_id = top_id
             #if top_size > transfer_min:
             # given a top transfer nog with sufficiently big overlap, merge too small nogs (e.g. singletons) into it
