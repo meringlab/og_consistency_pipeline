@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Module containing functions for gene Tree - species Tree reconciliation
 # author:   davide.heller@imls.uzh.ch
 # date:     06-03-2017

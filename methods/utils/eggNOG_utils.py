@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Collection of helper function to ease interaction with the eggNOG data and general file handling.

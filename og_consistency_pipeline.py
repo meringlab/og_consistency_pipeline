@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Launch script to make a hierarchy of Orthologous Groups consistent
 # author:   Davide Heller
 # email:    davide.heller@imls.uzh.ch

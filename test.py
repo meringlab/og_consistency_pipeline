@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # basic testing of script modules
 
 import os

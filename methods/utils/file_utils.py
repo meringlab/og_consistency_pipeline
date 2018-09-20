@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #Utilities to work with files
 
 #author:    Davide Heller

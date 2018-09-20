@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # module to join solutions from the reconciliation procedure to make the
 # expanded NOGs consistent
 
