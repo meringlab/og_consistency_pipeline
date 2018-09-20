@@ -41,8 +41,9 @@ def get_level_order(level_id):
 
 def write_default_solutions(higher_level, inconsistencies):
     with open('%d.default_solutions.tsv'%higher_level,'w') as f:
-        for nog_id in inconsistencies:
-            for inconsistent_nog, solution in inconsistencies[nog_id].items():
+        for nog_id in sorted(inconsistencies):
+            for inconsistent_nog in sorted(inconsistencies[nog_id]):
+                solution = inconsistencies[nog_id][inconsistent_nog]
                 if solution:
                     if solution['decision'] == 'split':
                         root = 'D'
