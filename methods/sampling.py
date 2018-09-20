@@ -88,7 +88,7 @@ def combined_sampling(split_species,paralogs,level_species,sample_size):
     sample_species = set()
     
     # fix a number between 1/4 and 1/3 to be slightly above
-    species_no = sample_size / 3
+    species_no = sample_size // 3
     
     # 1. choose randomly two levels
     for level_id in random.sample(list(level_species.keys()),2):
