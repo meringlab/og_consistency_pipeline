@@ -218,9 +218,8 @@ def ete_build_workflow(tree_job):
 
 def direct(mafft_cmd, fasttree_cmd, tree_job):
     
-    nog_id, i, input_fasta = tree_job
+    nog_id, sample_no, input_fasta = tree_job
     
-    t_start = time.time()
     p = subprocess.Popen("%s | %s"%(mafft_cmd,fasttree_cmd),
                          shell=True,
                          stdin=subprocess.PIPE,
@@ -228,9 +227,8 @@ def direct(mafft_cmd, fasttree_cmd, tree_job):
                          stderr=subprocess.PIPE)
     
     tree_nw, err = p.communicate(input_fasta.encode())
-    t_end = time.time()
     
-    return (nog_id, t_end - t_start, tree_nw.decode())
+    return (nog_id, sample_no, tree_nw.decode())
 
 def direct_fast(tree_job):
     mafft_cmd = MAFFT_WEB + MAFFT_AUTO_OPTION

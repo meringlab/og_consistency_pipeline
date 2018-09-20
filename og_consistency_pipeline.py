@@ -132,7 +132,8 @@ if __name__ == '__main__':
         output_dir = args.output_dir
     else:
         output_dir = 'new_definition'
-        os.mkdir(output_dir)
+        if not args.dry_run:
+            os.mkdir(output_dir)
     
     eggNOG_children = eu.read_eggNOG_treeRev()
     eggNOG_names = eu.read_eggNOG_names()
@@ -401,6 +402,9 @@ if __name__ == '__main__':
     
                             inconsistencies[nog_id][inconsistent_nog] = {}
             
+            sys.stderr.write('Completed expansion with a total of %d pre-splits and %d pre-merges\n'%(
+                total_pre_splits,total_pre_merges))
+            
             # save fasta samples
             if args.input_trees or args.input_reconciliation:
                 pass 
@@ -411,9 +415,6 @@ if __name__ == '__main__':
             else:
                 write_default_solutions(higher_level,inconsistencies)
                 #tree_building.write_tree_tasks(higher_level,tree_jobs)
-        
-            sys.stderr.write('Completed expansion with a total of %d pre-splits and %d pre-merges\n'%(
-                total_pre_splits,total_pre_merges))
         
         timings.append(time.time())        
         ############## 3. TREE BUILDING ##############
@@ -495,8 +496,8 @@ if __name__ == '__main__':
                 sys.stderr.write('Completed building %d trees\n'%len(tree_computations))
             else:
                 with open('%d.tree_computations_unrooted.tsv'%higher_level, 'w') as f:
-                    for nog_id,tree_time,tree_nw in tree_computations:
-                        f.write('%d\t%.5f\t%s'%(nog_id,tree_time,tree_nw))
+                    for nog_id,sample_no,tree_nw in tree_computations:
+                        f.write('%d\t%d\t%s'%(nog_id,sample_no,tree_nw))
             
             timings.append(time.time())
             
@@ -510,8 +511,8 @@ if __name__ == '__main__':
                 sys.stderr.write('Completed building %d trees\n'%len(tree_computations))
             else:
                 with open('%d.tree_computations.tsv'%higher_level, 'w') as f:
-                    for nog_id,tree_time,tree_nw in tree_computations:
-                        f.write('%d\t%.5f\t%s\n'%(nog_id,tree_time,tree_nw))
+                    for nog_id,sample_no,tree_nw in tree_computations:
+                        f.write('%d\t%d\t%s\n'%(nog_id,sample_no,tree_nw))
         
             timings.append(time.time())
         ############## 4. TREE RECONCILIATION ##############
@@ -552,9 +553,9 @@ if __name__ == '__main__':
                 p.join()
             else:
                 reconciliation_jobs = []
-                for nog_id,tree_time,tree_nw in tree_computations:
+                for nog_id,sample_no,tree_nw in tree_computations:
                     species_nw = reconciliation.prune_species_tree(tree_nw,eggNOG_speciesTree,args.keep_polytomies)
-                    job = (nog_id,tree_time,tree_nw,species_nw,args.root_notung)
+                    job = (nog_id,sample_no,tree_nw,species_nw,args.root_notung)
                     reconciliation_jobs.append(job)
         
             sys.stderr.write('Starting reconciliation for %d jobs...\n'%len(reconciliation_jobs))
