@@ -185,7 +185,7 @@ class ExpandedNOG:
         """ pre split expanded nog network based on transfer threshold (percentage)"""
         split_counter = 1
         split_results = {}
-        for nog_id in self.find_inconsistencies():
+        for nog_id in sorted(self.find_inconsistencies()):
             nog_proteins = self.expanded_nog[nog_id]
             transfer_min = max(len(nog_proteins) * transfer_thr,2) # split always singletons
             for higher_id in sorted(self.lower_nogs[nog_id]):
@@ -218,7 +218,7 @@ class ExpandedNOG:
         """ pre merge all singletons or contributions below 10% to the NOG with the largest overlap"""
         merge_counter = 1
         merge_results = {}
-        for nog_id in self.find_inconsistencies():
+        for nog_id in sorted(self.find_inconsistencies()):
             nog_proteins = self.expanded_nog[nog_id]
             transfer_min = max(len(nog_proteins) * transfer_thr,2) # 2 be the minimum to merge singletons
             higher_ids = sorted(self.lower_nogs[nog_id])
