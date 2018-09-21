@@ -507,7 +507,7 @@ if __name__ == '__main__':
             ## 3b. rerooting
             sys.stderr.write('Applying mid-point rooting to all %d tree computations..\n'%len(tree_jobs))
             if not args.root_notung:
-                tree_computations = tree_building.reroot_trees(tree_computations,args.keep_polytomies)
+                tree_computations = [tree_building.reroot_trees(x,args.keep_polytomies) for x in tqdm(tree_computations)]
             
             # save tree building results
             if args.dry_run:    
@@ -556,7 +556,7 @@ if __name__ == '__main__':
                 p.join()
             else:
                 reconciliation_jobs = []
-                for nog_id,sample_no,tree_nw in tree_computations:
+                for nog_id,sample_no,tree_nw in tqdm(tree_computations):
                     species_nw = reconciliation.prune_species_tree(tree_nw,eggNOG_speciesTree,args.keep_polytomies)
                     job = (nog_id,sample_no,tree_nw,species_nw,args.root_notung)
                     reconciliation_jobs.append(job)

@@ -259,23 +259,21 @@ def backup_alg(mafft_cmd, fasttree_cmd, tree_job):
     
     return (nog_id, t_end - t_start, tree_nw)
     
-def reroot_trees(tree_computations, species_tree_polytomies):
-    rerooted = []
-    for nog_id,tree_time,tree_nw in tree_computations:
-        assert tree_nw, "Tree newick is non existant for %d %d"%(nog_id,tree_time)
-        t = Tree(tree_nw)
-        if species_tree_polytomies:
-            # reconciliation algorithm can only have one input with multifurcations/polytomies
-            t.resolve_polytomy(recursive=True)
-        
-        node = t.get_midpoint_outgroup()
-        if node:
-            t.set_outgroup(node)
-            rerooted_job = (nog_id,tree_time,t.write())
-            rerooted.append(rerooted_job)
-        else:
-            sys.stderr.write('Problems in rerooting %s %s %s'%(nog_id,tree_time,tree_nw))
-            rerooted.append((nog_id,tree_time,tree_nw))
-            
-    return rerooted
+def reroot_trees(tree_computation, species_tree_polytomies):
     
+    nog_id,tree_time,tree_nw  = tree_computation
+    assert tree_nw, "Tree newick is non existant for %d %d"%(nog_id,tree_time)
+    t = Tree(tree_nw)
+    
+    if species_tree_polytomies:
+        # reconciliation algorithm can only have one input with multifurcations/polytomies
+        t.resolve_polytomy(recursive=True)
+    
+    node = t.get_midpoint_outgroup()
+    if node:
+        t.set_outgroup(node)
+        rerooted_job = (nog_id,tree_time,t.write())
+        return rerooted_job
+    else:
+        sys.stderr.write('Problems in rerooting %s %s %s'%(nog_id,tree_time,tree_nw))
+        return (nog_id,tree_time,tree_nw)
