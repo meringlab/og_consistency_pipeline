@@ -1,3 +1,4 @@
 data/*
 bin/*
+test_data/*
 *.pyc
