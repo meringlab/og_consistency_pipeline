@@ -681,7 +681,7 @@ if __name__ == '__main__':
                 p.close()
                 p.join()
             else:
-                consistent_nogs = list(map(join.apply_solutions,consistency_jobs))
+                consistent_nogs = [join.apply_solutions(x) for x in tqdm(consistency_jobs)]
             
             stop = time.time()
             total = stop - start
@@ -788,7 +788,7 @@ if __name__ == '__main__':
             os.makedirs(copy_dir)
             for level_id in protein_nogs:
                 with open(os.path.join(copy_dir,'%d.tsv'%level_id),'w') as f:
-                    for protein_id, nog_id in protein_nogs[level_id].items():
+                    for protein_id, nog_id in sorted(protein_nogs[level_id].items(),key=lambda x: '%d %d'%(x[1],x[0])):
                         f.write('%d\t%d\n'%(nog_id,protein_id))
                         
                 new_definition_pickle = hgt_utils.save_eggNOG_nog_mapping(
@@ -807,7 +807,7 @@ if __name__ == '__main__':
             # write to disk new definitions
             for level_id in protein_nogs:
                 with open(os.path.join(output_dir,'%d.tsv'%level_id),'w') as f:
-                    for protein_id, nog_id in protein_nogs[level_id].items():
+                    for protein_id, nog_id in sorted(protein_nogs[level_id].items(),key=lambda x: '%d %d'%(x[1],x[0])):
                         f.write('%d\t%d\n'%(nog_id,protein_id))
                         
                 new_definition_pickle = hgt_utils.save_eggNOG_nog_mapping(
