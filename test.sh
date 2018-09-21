@@ -1,8 +1,8 @@
 #!/bin/bash
 # Test script to start the consistency pipeline on primates [9443] with the limit of 10 tree computations
 
-if [ ! -d "data" ]; then
-    echo "data directory not found, required for test!"
+if [ ! -d "test_data" ]; then
+    echo "test_data directory not found, please generate with generate_test_data.py!"
     exit 1
 fi
 
