@@ -11,6 +11,7 @@ from methods import test
 from methods.utils import eggNOG_utils as eu
 
 from ete3 import Tree
+from tqdm import tqdm
 
 import time
 import sys
@@ -484,7 +485,7 @@ if __name__ == '__main__':
                 p.close()
                 p.join()
             else:
-                tree_computations = list(map(tree_method, tree_jobs))
+                tree_computations = [tree_method(x) for x in tqdm(tree_jobs)]
             
             stop = time.time()
             total = stop - start
@@ -576,7 +577,7 @@ if __name__ == '__main__':
                 p.close()
                 p.join()
             else:
-                reconciliations = list(map(reconciliation_method,reconciliation_jobs))
+                reconciliations = [reconciliation_method(x) for x in tqdm(reconciliation_jobs)]
                 
             # flag incomplete reconciliations
             to_delete = []
