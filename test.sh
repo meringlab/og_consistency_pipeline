@@ -19,7 +19,6 @@ if [ -d "new_definition" ]; then
     rm -r new_definition
 fi
 
-#time python og_consistency_pipeline.py 9443 -l 10
 time python og_consistency_pipeline.py 9443 --input_definition test_data
 # for a complete run of the pipeline parallel execution is reccomended
 # e.g. with 10 cores:

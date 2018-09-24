@@ -20,7 +20,7 @@ For convenience the binaries of the three tools have been included in the archiv
 
 # Example execution
 
-By extracting the two archives with the `setup.sh` script, the eggNOG related example can be executed. The data directory contains information regarding the Primates level of eggNOG and its two sublevels, Hominidae and Cercopithecoidea:
+By running the `setup.py` script, the two archives are extracted and the small eggNOG related example dataset is generated. The data directory contains information regarding the Primates level of eggNOG and its two sublevels, Hominidae and Cercopithecoidea:
 
 ```
                              /-314294[prNOG-1][superfamily:Cercopithecoidea]
@@ -30,8 +30,7 @@ By extracting the two archives with the `setup.sh` script, the eggNOG related ex
 
 For the 15 member species of the Primates level (see `data/9443.primates.species.tsv`), the data directory includes FASTA sequences (in `data/fastafiles`) and orthologous group mappings (in `data/pickles`) as well as clades (in `data/clades`). 
 
-- To test that the python modules load correcly, simply run `test.py`
-- To test the consistency pipeline on the example data, execute `test.sh`, which will start to make the the three levels hierarchically consistent. The command in the script is limited to a small number of trees, to run the full example (~ 8000 Trees), an execution with several cores is recommended (`-c` option, see final comment `test.sh`)
+- To test the consistency pipeline on the small example data ([test_data] directory), execute `test.sh`, which will make the three levels hierarchically consistent. The command in the script is limited to a small number of trees, to run the full example (~ 8000 Trees), an execution with several cores is recommended (`-c` option, see final comment `test.sh`)
 
 # Contact
 
