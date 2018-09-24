@@ -478,12 +478,8 @@ if __name__ == '__main__':
                 tree_computations = tree_building.collect_cluster_results(higher_level)
                 
             elif cpu_cores > 1:
-                p = Pool(cpu_cores)
-                tree_computations = p.map(tree_method, tree_jobs, 10)
-    
-                # wait for all workers to finish
-                p.close()
-                p.join()
+                with Pool(cpu_cores) as p:
+                    tree_computations = list(tqdm(p.imap(tree_method, tree_jobs, 10),total=len(tree_jobs)))
             else:
                 tree_computations = [tree_method(x) for x in tqdm(tree_jobs)]
             
@@ -549,11 +545,10 @@ if __name__ == '__main__':
             eggNOG_speciesTree = higher_node.detach()
             
             if cpu_cores > 1:
-                p = Pool(cpu_cores)
-                cached_jobs = [(x,y,z,eggNOG_speciesTree,args.keep_polytomies) for x,y,z in tree_computations]
-                reconciliation_jobs = p.map(reconciliation.prepare_reconciliation_job,cached_jobs)
-                p.close()
-                p.join()
+                cached_jobs = [(x,y,z,eggNOG_speciesTree,args.keep_polytomies,args.root_notung) for x,y,z in tree_computations]
+                with Pool(cpu_cores) as p:
+                    reconciliation_jobs = list(tqdm(
+                        p.imap(reconciliation.prepare_reconciliation_job,cached_jobs),total=len(cached_jobs)))
             else:
                 reconciliation_jobs = []
                 for nog_id,sample_no,tree_nw in tqdm(tree_computations):
@@ -572,10 +567,9 @@ if __name__ == '__main__':
                                                 args.keep_polytomies,args.root_notung,args.infer_transfers)
                 reconciliations = reconciliation.collect_taskArray(higher_level,cpu_cores=cpu_cores)
             elif cpu_cores > 1:
-                p = Pool(cpu_cores)
-                reconciliations = p.map(reconciliation_method,reconciliation_jobs)
-                p.close()
-                p.join()
+                with Pool(cpu_cores) as p:
+                    reconciliations = list(tqdm(
+                        p.imap(reconciliation_method,reconciliation_jobs),total=len(reconciliation_jobs)))
             else:
                 reconciliations = [reconciliation_method(x) for x in tqdm(reconciliation_jobs)]
                 
@@ -676,10 +670,9 @@ if __name__ == '__main__':
             start = time.time()
             
             if cpu_cores > 1:
-                p = Pool(cpu_cores)
-                consistent_nogs = p.map(join.apply_solutions,consistency_jobs)
-                p.close()
-                p.join()
+                with Pool(cpu_cores) as p:
+                    consistent_nogs = list(tqdm(
+                        p.imap(join.apply_solutions,consistency_jobs),total=len(consistency_jobs)))
             else:
                 consistent_nogs = [join.apply_solutions(x) for x in tqdm(consistency_jobs)]
             

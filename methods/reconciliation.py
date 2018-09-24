@@ -342,11 +342,11 @@ def prune_species_tree(gene_tree, cached_species_tree=None, keep_polytomies=Fals
 
 def prepare_reconciliation_job(tree_job):
     
-    nog_id,sample_id,gene_nw,cached_species_tree,keep_polytomies = tree_job
+    nog_id,sample_id,gene_nw,cached_species_tree,keep_polytomies,root_notung = tree_job
     
     species_nw = prune_species_tree(gene_nw,cached_species_tree,keep_polytomies)
     
-    reconciliation_job = (nog_id,sample_id,gene_nw,species_nw)
+    reconciliation_job = (nog_id,sample_id,gene_nw,species_nw,root_notung)
     return reconciliation_job
 
 def compute_split_index(t, annotate_tree=False):
