@@ -5,10 +5,28 @@ import os
 import random
 from collections import defaultdict
 from tqdm import tqdm
-from methods import hgt_utils, expansion
+from methods import hgt_utils
+from methods.utils import eggNOG_utils as eu
 
 if __name__ == '__main__':
     
+    print('# Expanding example data and program binaries..')
+    assert os.path.exists('data.tar.gz'), 'Example data not found!'
+    assert os.path.exists('bin.tar.gz'), 'Program binaries not found!'
+    
+    os.system('tar -xzf data.tar.gz')
+    os.system('tar -xzf bin.tar.gz')
+
+    print('# Testing extraction and module loading')    
+    assert os.path.exists('data/eggNOG_names.tsv'), "no data dir found, please check if data.tar.gz was extracted correctly!"
+    
+    assert eu.read_eggNOG_names()[9606] == 'Homo sapiens', "Expected 'Homo sapiens' but obtained: %s"%eu.read_eggNOG_names()[9606]
+    print('Successfully read eggNOG species names!')
+    
+    assert 'CL4' in hgt_utils.load_v4clades('homNOG'), "Expected clade CL4 not found in homNOG clades: %s"%hu.load_v4clades('homNOG')
+    print('Successfully read hominidae [homNOG] clades!')
+    
+    print("# Starting test data generation")     
     output_dir = 'test_data'
     assert not os.path.exists(output_dir), '[test_data] already present, remove to generate new'
     os.makedirs(output_dir)
@@ -23,6 +41,7 @@ if __name__ == '__main__':
     random_nogs = random.sample(list(nog_proteins[9604]),100)
 
     print('# Expanding nogs')
+    from methods import expansion
     visited_nogs = set()
     for nog_id in tqdm(sorted(random_nogs)):
         exNOG = expansion.ExpandedNOG(nog_id)
