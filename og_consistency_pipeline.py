@@ -2,7 +2,7 @@
 # Launch script to make a hierarchy of Orthologous Groups consistent
 # author:   Davide Heller
 # email:    davide.heller@imls.uzh.ch
-# version:  0.1 [2018-09-13]
+# version:  0.2 [2018-09-24]
 
 from methods import hgt_utils, expansion, sampling
 from methods import tree_building, reconciliation, join
