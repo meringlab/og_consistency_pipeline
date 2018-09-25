@@ -43,11 +43,18 @@ rule tree_reconciliation:
 
 rule tree_building:
     input:
-        join(config['output_dir'],'samples/{level_id}.tsv')
+        samples=join(config['output_dir'],'samples/{level_id}.tsv')
     output:
-        join(config['output_dir'],'trees/{level_id}.tsv')
-    shell:
-        "touch {output}"
+        trees_rooted=join(config['output_dir'],'trees/{level_id}.tsv'),
+        trees_unrooted=join(config['output_dir'],'unrooted_trees/{level_id}.tsv')
+    threads:
+        20 # max=20, i.e. threads = min(threads, cores)
+    params:
+        tree_method='website',
+        root_notung=False,
+        keep_polytomies=False,
+    script:
+        "s03_tree_building.py"
 
 rule expansion:
     input:
