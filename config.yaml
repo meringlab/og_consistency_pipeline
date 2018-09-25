@@ -1,2 +1,2 @@
-input_dir: /mnt/gaia/davide/eggnog/eggnog5/subluca_consistent/ # test_data
+input_dir: test_data
 output_dir: test_output
