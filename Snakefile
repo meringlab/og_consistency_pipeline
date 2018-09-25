@@ -35,11 +35,18 @@ rule join:
 
 rule tree_reconciliation:
     input:
-        join(config['output_dir'],'trees/{level_id}.tsv')
+        trees = join(config['output_dir'],'trees/{level_id}.tsv')
     output:
-        join(config['output_dir'],'reconciliations/{level_id}.tsv')
-    shell:
-        'touch {output}'
+        reconciliations = join(config['output_dir'],'reconciliations/{level_id}.tsv')
+    threads:
+        20 # max=20, i.e. threads = min(threads, cores)
+    params:
+        computation_method = 'multicore',
+        root_notung=False,
+        keep_polytomies=False,
+        infer_transfers=False
+    script:
+        's04_tree_reconciliation.py'
 
 rule tree_building:
     input:
