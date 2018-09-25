@@ -6,8 +6,8 @@ INCONSISTENT_OGS = '/mnt/gaia/davide/eggnog/eggnog5/subluca_consistent/'
 
 level_hierarchy = eu.read_eggNOG_treeRev()
 
-def get_children_paths(level_id):
-    level_id = int(level_id)
+def get_children_paths(wildcards):
+    level_id = int(wildcards.level_id)
     assert level_id in level_hierarchy
     children = level_hierarchy[level_id]
     children_paths = []
@@ -26,7 +26,7 @@ rule all:
 rule join:
     input:
         parent=join(INCONSISTENT_OGS,'{level_id}.tsv'),
-        children=lambda wildcards: get_children_paths(wildcards.level_id),    
+        children=get_children_paths,    
         reconciliations=join(ODIR,'reconciliations/{level_id}.tsv'),
         #default_solutions=join(ODIR,'default_solutions/{level_id}.tsv'),
     output:
@@ -53,7 +53,7 @@ rule tree_building:
 rule expansion:
     input:
         join(INCONSISTENT_OGS,'{level_id}.tsv'),
-        children=lambda wildcards: get_children_paths(wildcards.level_id)
+        children=get_children_paths
     output:
         samples=join(ODIR,'samples/{level_id}.tsv')
     params:
