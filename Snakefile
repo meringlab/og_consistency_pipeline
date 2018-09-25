@@ -1,8 +1,7 @@
 from os.path import join
 from methods.utils import eggNOG_utils as eu
 
-ODIR = 'test_output'
-INCONSISTENT_OGS = '/mnt/gaia/davide/eggnog/eggnog5/subluca_consistent/'
+configfile: 'config.yaml'
 
 level_hierarchy = eu.read_eggNOG_treeRev()
 
@@ -13,49 +12,49 @@ def get_children_paths(wildcards):
     children_paths = []
     for child_id in children:
         if child_id in level_hierarchy:
-            children_paths.append(join(ODIR,'consistent_ogs/%d.tsv'%child_id))
+            children_paths.append(join(config['output_dir'],'consistent_ogs/%d.tsv'%child_id))
         else:
             # leaf
-            children_paths.append(join(INCONSISTENT_OGS,'%d.tsv'%child_id))
+            children_paths.append(join(config['input_dir'],'%d.tsv'%child_id))
     return children_paths
     
 rule all:
     input:
-        join(ODIR,'consistent_ogs/{level_id}.tsv')
+        join(config['output_dir'],'consistent_ogs/{level_id}.tsv')
 
 rule join:
     input:
-        parent=join(INCONSISTENT_OGS,'{level_id}.tsv'),
+        parent=join(config['input_dir'],'{level_id}.tsv'),
         children=get_children_paths,    
-        reconciliations=join(ODIR,'reconciliations/{level_id}.tsv'),
-        #default_solutions=join(ODIR,'default_solutions/{level_id}.tsv'),
+        reconciliations=join(config['output_dir'],'reconciliations/{level_id}.tsv'),
+        #default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
     output:
-        join(ODIR,'consistent_ogs/{level_id}.tsv')
+        join(config['output_dir'],'consistent_ogs/{level_id}.tsv')
     shell:
         'touch {output}'
 
 rule tree_reconciliation:
     input:
-        join(ODIR,'trees/{level_id}.tsv')
+        join(config['output_dir'],'trees/{level_id}.tsv')
     output:
-        join(ODIR,'reconciliations/{level_id}.tsv')
+        join(config['output_dir'],'reconciliations/{level_id}.tsv')
     shell:
         'touch {output}'
 
 rule tree_building:
     input:
-        join(ODIR,'samples/{level_id}.tsv')
+        join(config['output_dir'],'samples/{level_id}.tsv')
     output:
-        join(ODIR,'trees/{level_id}.tsv')
+        join(config['output_dir'],'trees/{level_id}.tsv')
     shell:
         "touch {output}"
 
 rule expansion:
     input:
-        join(INCONSISTENT_OGS,'{level_id}.tsv'),
+        join(config['input_dir'],'{level_id}.tsv'),
         children=get_children_paths
     output:
-        samples=join(ODIR,'samples/{level_id}.tsv')
+        samples=join(config['output_dir'],'samples/{level_id}.tsv')
     params:
         random_seed = 1,
         sample_no = 20,
