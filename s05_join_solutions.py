@@ -69,14 +69,17 @@ def read_inconsistencies(inconsistent_tsv, default_tsv):
     
     return inconsistencies
 
-def write_protein_nogs(path_tsv,protein_nogs):
+def write_protein_nogs(output_dir,protein_nogs):
     for level_id in protein_nogs:
-        level_tsv = os.path.join(path_tsv,'%d.tsv'%level_id)
+        level_tsv = os.path.join(output_dir,'%d.tsv'%level_id)
         sys.stderr.write('Writing %s\n'%level_tsv)
         with open(level_tsv,'w') as f:
             for protein_id, nog_id in sorted(protein_nogs[level_id].items(),
                                              key=lambda x: '%d %d'%(x[1],x[0])):
                 f.write('%d\t%d\n'%(nog_id,protein_id))
+        
+        # pickle version
+        hgt_utils.save_eggNOG_nog_mapping(level_id,protein_nogs[level_id],output_dir)
                 
 def write_singletons(path_tsv, new_singletons):
     with open(path_tsv,'w') as f:
