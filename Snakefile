@@ -25,13 +25,19 @@ rule all:
 rule join:
     input:
         parent=join(config['input_dir'],'{level_id}.tsv'),
-        children=get_children_paths,    
+        children=get_children_paths,
         reconciliations=join(config['output_dir'],'reconciliations/{level_id}.tsv'),
         default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
+        inconsistencies=join(config['output_dir'],'inconsistencies/{level_id}.tsv')
     output:
-        join(config['output_dir'],'consistent_ogs/{level_id}.tsv')
-    shell:
-        'touch {output}'
+        consistent_ogs=join(config['consistent_ogs'],'{level_id}.tsv'),
+        new_singletons=join(config['output_dir'],'new_singletons/{level_id}.tsv')
+    params:
+        majority_vote_threshold=0.5
+    threads:
+        20 # max=20, i.e. threads = min(threads, cores)
+    script:
+        's05_join_solutions.py'
 
 rule tree_reconciliation:
     input:
@@ -69,7 +75,8 @@ rule expansion:
         children=get_children_paths
     output:
         samples=join(config['output_dir'],'samples/{level_id}.tsv'),
-        default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv')
+        default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
+        inconsistencies=join(config['output_dir'],'inconsistencies/{level_id}.tsv')
     params:
         random_seed = 1,
         sample_no = 20,

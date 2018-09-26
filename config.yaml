@@ -1,2 +1,3 @@
 input_dir: test_data
 output_dir: test_output
+consistent_ogs: test_output/consistent_ogs

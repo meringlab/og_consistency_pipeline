@@ -24,12 +24,19 @@ def write_default_solutions(path_tsv, inconsistencies):
                     else:
                         root = 'S'
                     
-                    f.write('%d\t%s\t%.1f\n'%(
-                        inconsistent_nog, root, solution[root][0]))
+                    f.write('%d\t%d\t%s\t%.1f\n'%(
+                        nog_id, inconsistent_nog, root, solution[root][0]))
+
+def write_inconsistencies(path_tsv, inconsistencies):
+    with open(path_tsv,'w') as f:
+        for nog_id in sorted(inconsistencies):
+            for inconsistent_nog in sorted(inconsistencies[nog_id]):
+                f.write('%d\t%d\n'%(nog_id,inconsistent_nog))
 
 def expand_and_sample(higher_level,output_dir, input_definition,
                       sample_no,sample_size,sample_method,random_seed,
-                      default_action, tree_limit, verbose, tree_tsv, default_tsv):
+                      default_action, tree_limit, verbose,
+                      tree_tsv, default_tsv, inconsistent_tsv):
     
     eggNOG_children = eu.read_eggNOG_treeRev()
     eggNOG_names = eu.read_eggNOG_names()
@@ -193,6 +200,7 @@ def expand_and_sample(higher_level,output_dir, input_definition,
     # save tree fasta samples and default solutions
     write_tree_tasks(tree_tsv,tree_jobs)
     write_default_solutions(default_tsv,inconsistencies)
+    write_inconsistencies(inconsistent_tsv,inconsistencies)
 
 if __name__ == '__main__':
     expand_and_sample(higher_level=int(snakemake.wildcards.level_id),
@@ -206,4 +214,5 @@ if __name__ == '__main__':
                       tree_limit=snakemake.params.tree_limit,
                       verbose=snakemake.params.verbose,
                       tree_tsv=snakemake.output.samples,
-                      default_tsv=snakemake.output.default_solutions)
+                      default_tsv=snakemake.output.default_solutions,
+                      inconsistent_tsv=snakemake.output.inconsistencies)
