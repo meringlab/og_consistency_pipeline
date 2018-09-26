@@ -6,7 +6,7 @@ import time
 from collections import Counter,defaultdict,OrderedDict
 
 from tqdm import tqdm
-from methods import expansion, join, hgt_utils
+from methods import expansion, join, test, hgt_utils
 from methods.utils import eggNOG_utils as eu
 
 def read_reconciliations(path_tsv):
@@ -244,6 +244,16 @@ def join_solutions(higher_level, output_dir, input_definition,
     write_protein_nogs(output_consistent, protein_nogs)
     write_singletons(output_singletons, new_singletons)
     
+    # test consistency
+    lower_levels = list(eggNOG_children[higher_level])
+    test.test_consistency([higher_level],lower_levels,protein_nogs)
+    while lower_levels:
+        lower_level = lower_levels.pop()
+        if lower_level in eggNOG_children:
+            sub_levels = list(eggNOG_children[lower_level])
+            test.test_consistency([lower_level],sub_levels,protein_nogs)
+            lower_levels.extend(sub_levels)
+
 if __name__ == '__main__':
     join_solutions(
         higher_level=int(snakemake.wildcards.level_id),
