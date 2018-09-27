@@ -1,26 +1,30 @@
 from os.path import join
-from scripts.methods.utils import eggNOG_utils as eu
+from ete3 import Tree
 
 configfile: 'config.yaml'
 
-level_hierarchy = eu.read_eggNOG_treeRev() # TODO replace with config
-
 def get_children_paths(wildcards):
-    level_id = int(wildcards.level_id)
-    assert level_id in level_hierarchy
-    children = level_hierarchy[level_id]
     children_paths = []
-    for child_id in children:
-        if child_id in level_hierarchy:
-            children_paths.append(join(config['output_dir'],'consistent_ogs/%d.tsv'%child_id))
-        else:
-            # leaf
+    
+    # read level hierarchy
+    t = Tree(config['level_hierarchy'],format=8)    
+    node = t.search_nodes(name=wildcards.level_id)
+    assert len(node), 'level_id %s not found in level hiearchy!'%wildcards.level_id
+    node = node[0]
+
+    # return children location
+    for child in node.get_children():
+        child_id = int(child.name)
+        if child.is_leaf():
             children_paths.append(join(config['input_dir'],'%d.tsv'%child_id))
+        else:
+            children_paths.append(join(config['consistent_ogs'],'%d.tsv'%child_id))
+            
     return children_paths
     
 rule all:
     input:
-        join(config['output_dir'],'consistent_ogs/{level_id}.tsv')
+        join(config['consistent_ogs'],config['target'])
 
 rule join:
     input:
