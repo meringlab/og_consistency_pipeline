@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
 # Snakemake workflow to make a hierarchy of Orthologous Groups (OGs) consistent
+# Copyright (C) 2018  Davide Heller
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # author:   Davide Heller
 # email:    davide.heller@imls.uzh.ch
 # version:  0.3 [2018-09-27]
@@ -11,9 +25,9 @@ configfile: 'config.yaml'
 
 def get_children_paths(wildcards):
     children_paths = []
-    
+
     # read level hierarchy
-    t = Tree(config['level_hierarchy'],format=8)    
+    t = Tree(config['level_hierarchy'],format=8)
     node = t.search_nodes(name=wildcards.level_id)
     assert len(node), 'level_id %s not found in level hiearchy!'%wildcards.level_id
     node = node[0]
@@ -25,9 +39,9 @@ def get_children_paths(wildcards):
             children_paths.append(join(config['input_dir'],'%d.tsv'%child_id))
         else:
             children_paths.append(join(config['consistent_ogs'],'%d.tsv'%child_id))
-            
+
     return children_paths
-    
+
 rule all:
     input:
         join(config['consistent_ogs'],config['target'])
@@ -100,17 +114,17 @@ rule expansion:
         verbose = False
     script:
         'scripts/s01_02_expand_and_sample.py'
-        
+
 rule test_data:
     input:
-        'data/pickles/9443.nogINT.setProteinINT.pkl2'    
+        'data/pickles/9443.nogINT.setProteinINT.pkl2'
     output:
         'test_data/9443.tsv',
         'test_data/9604.tsv',
         'test_data/314294.tsv'
     script:
         'scripts/setup.py'
-        
+
 rule expand_data:
     input:
         data='data.tar.gz'
@@ -118,7 +132,7 @@ rule expand_data:
         'data/pickles/9443.nogINT.setProteinINT.pkl2'
     shell:
         "tar -xzf data.tar.gz"
-        
+
 rule expand_binaries:
     input:
         binaries='bin.tar.gz'
