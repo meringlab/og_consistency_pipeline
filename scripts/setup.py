@@ -9,13 +9,6 @@ from methods import hgt_utils
 from methods.utils import eggNOG_utils as eu
 
 if __name__ == '__main__':
-    
-    print('# Expanding example data and program binaries..')
-    assert os.path.exists('data.tar.gz'), 'Example data not found!'
-    assert os.path.exists('bin.tar.gz'), 'Program binaries not found!'
-    
-    os.system('tar -xzf data.tar.gz')
-    os.system('tar -xzf bin.tar.gz')
 
     print('# Testing extraction and module loading')    
     assert os.path.exists('data/eggNOG_names.tsv'), "no data dir found, please check if data.tar.gz was extracted correctly!"
@@ -28,8 +21,6 @@ if __name__ == '__main__':
     
     print("# Starting test data generation")     
     output_dir = 'test_data'
-    assert not os.path.exists(output_dir), '[test_data] already present, remove to generate new'
-    os.makedirs(output_dir)
     
     print('# Loading definition')
     protein_nogs, nog_proteins = hgt_utils.load_join_data(9443, output_dir , 'data/pickles')
