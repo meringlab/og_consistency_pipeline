@@ -4,6 +4,7 @@ import os
 import sys
 import time
 from collections import Counter,defaultdict,OrderedDict
+from multiprocessing import Pool
 
 from tqdm import tqdm
 from methods import expansion, join, test, hgt_utils

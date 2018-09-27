@@ -37,7 +37,7 @@ rule join:
     threads:
         20 # max=20, i.e. threads = min(threads, cores)
     script:
-        's05_join_solutions.py'
+        's05_06_join_and_propagate.py'
 
 rule tree_reconciliation:
     input:
@@ -86,4 +86,4 @@ rule expansion:
         tree_limit = -1, # no limit
         verbose = False
     script:
-        's01_expand_and_02_sample.py'
+        's01_02_expand_and_sample.py'
