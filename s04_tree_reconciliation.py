@@ -25,7 +25,7 @@ def read_trees(tree_tsv):
             else:
                 sys.stderr.write("Non standard line @ %d: %s\n"%(c,line))
                 sys.stderr.write('Completed loading of %d tree compuations from %s\n'%(
-                    len(tree_computations),args.input_trees))
+                    len(tree_computations),tree_tsv))
     return tree_computations
 
 def write_reconciliations(reconciliations_tsv,reconciliations):
