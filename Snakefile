@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+# Snakemake workflow to make a hierarchy of Orthologous Groups (OGs) consistent
+# author:   Davide Heller
+# email:    davide.heller@imls.uzh.ch
+# version:  0.3 [2018-09-27]
+
 from os.path import join
 from ete3 import Tree
 
