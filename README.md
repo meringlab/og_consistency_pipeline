@@ -16,13 +16,13 @@ The current version of the pipeline (v0.3) is a [Snakemake](https://snakemake.re
 - [FastTree](http://www.microbesonline.org/fasttree/#Install) for tree prediction
 - [NOTUNG](http://www.cs.cmu.edu/~durand/Notung/) for tree reconciliation
 
-For convenience the binaries of the three tools have been included in the archive `bin.tar.gz`. We also added an example dataset from the [eggNOG database](http://eggnog.embl.de) in `data.tar.gz`. Currently the package structure is tied to how the eggNOG data is organized, but we plan to update the software in the coming weeks to a [Snakemake](https://snakemake.readthedocs.io/en/stable/) based version, for easier application to other datasets.
+For convenience the binaries of the three tools have been included in the archive `bin.tar.gz`. We also added an example dataset from the [eggNOG database](http://eggnog.embl.de) in `data.tar.gz`. Currently the package structure is tied to how the eggNOG data is organized, but we plan to update the software in the coming weeks for easier application to other datasets.
 
 The software has only been tested on Linux (Ubuntu 12/16/18.04). Other Unix systems might be suitable as well but binaries have to be adapted accordingly.
 
 # Example execution
 
-The configuration file `config.yaml` contains the parameters to run the pipeline on a small example generated from included eggNOG dataset. The `data.tar.gz` archive contains information regarding the Primates level of eggNOG and its two sublevels, Hominidae and Cercopithecoidea:
+The configuration file `config.yaml` contains the parameters to run the pipeline on a small example generated from the included eggNOG dataset. The `data.tar.gz` archive contains information regarding the Primates level of eggNOG and its two sublevels, Hominidae and Cercopithecoidea:
 
 ```
                              /-314294[prNOG-1][superfamily:Cercopithecoidea]
@@ -32,7 +32,7 @@ The configuration file `config.yaml` contains the parameters to run the pipeline
 
 For the 15 member species of the Primates level (see `data/9443.primates.species.tsv`), the data directory includes FASTA sequences (in `data/fastafiles`) and orthologous group mappings (in `data/pickles`) as well as clades (in `data/clades`). 
 
-- To run the Snakemake workflow, simply type `snakemake`. The result can be found in `test_output/consistent_ogs`.
+- To run the Snakemake workflow, simply type `snakemake`. This will generate a small inconsistent OG definition in `test_data`. After workflow completion the consistent results can be found in `test_output/consistent_ogs`.
 
 # Contact
 
