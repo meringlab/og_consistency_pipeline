@@ -21,6 +21,10 @@
 from os.path import join
 from ete3 import Tree
 
+# to download tool binaries
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+HTTP = HTTPRemoteProvider()
+
 configfile: 'config.yaml'
 
 def get_children_paths(wildcards):
@@ -66,7 +70,7 @@ rule join:
 rule tree_reconciliation:
     input:
         trees = join(config['output_dir'],'trees/{level_id}.tsv'),
-        reconciliation_software = 'bin/Notung-2.9.jar'
+        reconciliation_software = 'bin/Notung-2.9/Notung-2.9.jar'
     output:
         reconciliations = join(config['output_dir'],'reconciliations/{level_id}.tsv')
     threads:
@@ -133,12 +137,38 @@ rule expand_data:
     shell:
         "tar -xzf data.tar.gz"
 
-rule expand_binaries:
+rule download_binaries:
     input:
-        binaries='bin.tar.gz'
+        'bin/FastTree',
+        'bin/mafft-linux64/mafft.bat',
+        'bin/Notung-2.9/Notung-2.9.jar'
+
+rule get_fasttree:
+    input:
+        HTTP.remote(
+            'www.microbesonline.org/fasttree/FastTree',
+            insecure=True, keep_local=True)
     output:
-        alignment_software = 'bin/mafft-linux64/mafft.bat',
-        tree_software = 'bin/FastTree',
-        reconciliation_software = 'bin/Notung-2.9.jar'
+        'bin/FastTree'
     shell:
-        "tar -xzf bin.tar.gz"
+        'mv {input} {output} && chmod +x {output}'
+
+rule get_mafft:
+    input:
+        HTTP.remote(
+            'mafft.cbrc.jp/alignment/software/mafft-7.407-linux.tgz',
+            insecure=True, allow_redirects=True)
+    output:
+        'bin/mafft-linux64/mafft.bat'
+    shell:
+        'tar xfvz {input} -C bin'
+
+rule get_notung:
+    input:
+        HTTP.remote(
+            'goby.compbio.cs.cmu.edu/Notung/Notung-2.9.zip',
+            insecure=True)
+    output:
+        'bin/Notung-2.9/Notung-2.9.jar'
+    shell:
+        'unzip {input} -d bin'

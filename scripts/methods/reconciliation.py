@@ -499,7 +499,7 @@ def reconcile(job, return_tree=False):
         
         # run notung on tmp files
         subprocess.check_output(
-            'java -jar %s'%os.path.join(ds.BINARIES,'Notung-2.9.jar')+
+            'java -jar %s'%os.path.join(ds.BINARIES,'Notung-2.9/Notung-2.9.jar')+
             ' -g %s -s %s'%(f1_name, f2_name)+
             ' --rearrange --speciestag prefix --threshold 0.9 --edgeweights name --parsable',
             shell=True)
