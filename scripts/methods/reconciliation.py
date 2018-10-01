@@ -18,6 +18,7 @@ from multiprocessing import Pool
 from .utils import data_sources as ds
 
 EGGNOGv4_SPECIES_TREE = os.path.join(ds.EGGNOG_OUTPUT,"eggNOG_species_tree.nw")
+NOTUNG_WEB = None # ds.BINARIES,'Notung-2.9/Notung-2.9.jar'
 
 QSUB_TEMPLATE="""
 #!/bin/bash
@@ -499,7 +500,7 @@ def reconcile(job, return_tree=False):
         
         # run notung on tmp files
         subprocess.check_output(
-            'java -jar %s'%os.path.join(ds.BINARIES,'Notung-2.9/Notung-2.9.jar')+
+            'java -jar %s'%os.path.join(NOTUNG_WEB)+
             ' -g %s -s %s'%(f1_name, f2_name)+
             ' --rearrange --speciestag prefix --threshold 0.9 --edgeweights name --parsable',
             shell=True)

@@ -16,7 +16,7 @@ CHUNK_OUTPUT_PREFIX=""
 
 #### FASTTREE BINARIES
 
-FASTTREE_WEB = os.path.join(ds.BINARIES,'FastTree')
+FASTTREE_WEB = None #os.path.join(ds.BINARIES,'FastTree')
 FASTTREE_FULL_OPTIONS = ' -nopr -pseudo -mlacc 3 -slownni'
 # Options for slow nni version from ete build workflow "fasttree_full":
 # -nopr [noprogress]
@@ -28,7 +28,7 @@ FASTTREE_FULL_OPTIONS = ' -nopr -pseudo -mlacc 3 -slownni'
 
 #### MAFFT BINARIES
 
-MAFFT_WEB = os.path.join(ds.BINARIES,'mafft-linux64/mafft.bat')
+MAFFT_WEB = None #os.path.join(ds.BINARIES,'mafft-linux64/mafft.bat')
 MAFFT_AUTO_OPTION = " --auto -"
 MAFFT_LEAVEGAPS_OPTION = " --auto --leavegappyregion -"
 

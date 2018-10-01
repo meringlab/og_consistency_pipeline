@@ -36,9 +36,11 @@ def write_reconciliations(reconciliations_tsv,reconciliations):
             f.write('%d\t%s\t%.3f\n'%(nog_id,root_event,split_index))
 
 def reconcile_trees(higher_level,input_trees,
-                    computation_method,cpu_cores,
+                    computation_method,reconciliation_software,cpu_cores,
                     keep_polytomies,root_notung,infer_transfers,
                     output_reconciliations):
+    
+    reconciliation.NOTUNG_WEB = reconciliation_software
     
     tree_computations = read_trees(input_trees)
     eggNOG_level_species = eu.read_level_species()
@@ -101,6 +103,7 @@ if __name__ == '__main__':
     reconcile_trees(higher_level=int(snakemake.wildcards.level_id),
                     input_trees=snakemake.input.trees,
                     computation_method=snakemake.params.computation_method,
+                    reconciliation_software=snakemake.input.reconciliation_software,
                     cpu_cores=snakemake.threads,
                     keep_polytomies=snakemake.params.keep_polytomies,
                     root_notung=snakemake.params.root_notung,

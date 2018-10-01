@@ -27,8 +27,12 @@ def write_trees(tsv_path,tree_computations):
         for nog_id,sample_no,tree_nw in tree_computations:
             f.write('%d\t%d\t%s\n'%(nog_id,sample_no,tree_nw))
 
-def build_trees(higher_level,input_samples, tree_method, keep_polytomies,
+def build_trees(higher_level,input_samples, tree_method,
+                alignment_software,tree_software, keep_polytomies,
                 root_notung, cpu_cores, output_unrooted, output_rooted):
+    
+    tree_building.MAFFT_WEB = alignment_software
+    tree_building.FASTTREE_WEB = tree_software
     
     tree_jobs = read_samples(input_samples)
     
@@ -82,6 +86,8 @@ if __name__ == '__main__':
     build_trees(higher_level=int(snakemake.wildcards.level_id),
                 input_samples=snakemake.input.samples,
                 tree_method=snakemake.params.tree_method,
+                alignment_software=snakemake.input.alignment_software,
+                tree_software=snakemake.input.tree_software,
                 keep_polytomies=snakemake.params.keep_polytomies,
                 root_notung=snakemake.params.root_notung,
                 cpu_cores=snakemake.threads,
