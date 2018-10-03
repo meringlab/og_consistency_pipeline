@@ -118,24 +118,6 @@ rule expansion:
     script:
         'scripts/s01_02_expand_and_sample.py'
 
-rule test_data:
-    input:
-        'data/pickles/9443.nogINT.setProteinINT.pkl2'
-    output:
-        'test_data/9443.tsv',
-        'test_data/9604.tsv',
-        'test_data/314294.tsv'
-    script:
-        'scripts/setup.py'
-
-rule expand_data:
-    input:
-        data='data.tar.gz'
-    output:
-        'data/pickles/9443.nogINT.setProteinINT.pkl2'
-    shell:
-        "tar -xzf data.tar.gz"
-
 include: 'rules/tools.smk'
 rule download_tools:
     # using included rules/tools.smk
@@ -155,3 +137,24 @@ rule preprocess_data:
         tree_nhx="preprocessed_data/eggNOG_tree.levels_only.nhx",
         species_tree = 'preprocessed_data/eggNOG_species_tree.nw',
         protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
+
+rule expand_data:
+    input:
+        data='data.tar.gz'
+    output:
+        'data/pickles/9443.nogINT.setProteinINT.pkl2',
+        'data/pickles/9604.nogINT.setProteinINT.pkl2',
+        'data/pickles/314294.nogINT.setProteinINT.pkl2'
+    shell:
+        "tar -xzf data.tar.gz"
+        
+rule test_data:
+    input:
+        rules.preprocess_data.input,
+        rules.expand_data.output
+    output:
+        'test_data/9443.tsv',
+        'test_data/9604.tsv',
+        'test_data/314294.tsv'
+    script:
+        'scripts/setup.py'

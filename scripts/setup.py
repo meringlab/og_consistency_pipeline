@@ -6,24 +6,16 @@ import random
 from collections import defaultdict
 from tqdm import tqdm
 from methods import hgt_utils
-from methods.utils import eggNOG_utils as eu
 
 if __name__ == '__main__':
-
-    print('# Testing extraction and module loading')    
-    assert os.path.exists('data/eggNOG_names.tsv'), "no data dir found, please check if data.tar.gz was extracted correctly!"
     
-    assert eu.read_eggNOG_names()[9606] == 'Homo sapiens', "Expected 'Homo sapiens' but obtained: %s"%eu.read_eggNOG_names()[9606]
-    print('Successfully read eggNOG species names!')
-    
-    assert 'CL4' in hgt_utils.load_v4clades('homNOG'), "Expected clade CL4 not found in homNOG clades: %s"%hu.load_v4clades('homNOG')
-    print('Successfully read hominidae [homNOG] clades!')
-    
-    print("# Starting test data generation")     
-    output_dir = 'test_data'
+    print("# Starting test data generation")
+    input_dir = 'data/pickles'
+    assert os.path.exists(input_dir)
+    output_dir = snakemake.config['input_dir'] # actual test data input for the pipeline
     
     print('# Loading definition')
-    protein_nogs, nog_proteins = hgt_utils.load_join_data(9443, output_dir , 'data/pickles')
+    protein_nogs, nog_proteins = hgt_utils.load_join_data(9443, output_dir , input_dir)
     protein_names = hgt_utils.load_eggNOG_protein_names_pickle()
 
     print('# Sampling nogs')
