@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # Snakemake workflow to make a hierarchy of Orthologous Groups (OGs) consistent
 # Copyright (C) 2018  Davide Heller
 #
@@ -137,38 +136,21 @@ rule expand_data:
     shell:
         "tar -xzf data.tar.gz"
 
-rule download_binaries:
+include: 'rules/tools.smk'
+rule download_tools:
+    # using included rules/tools.smk
     input:
         'bin/FastTree',
         'bin/mafft-linux64/mafft.bat',
         'bin/Notung-2.9/Notung-2.9.jar'
 
-rule get_fasttree:
+include: 'rules/preprocessing.smk'
+rule preprocess_data:
+    # using included rules/preprocessing.smk
     input:
-        HTTP.remote(
-            'www.microbesonline.org/fasttree/FastTree',
-            insecure=True, keep_local=True)
-    output:
-        'bin/FastTree'
-    shell:
-        'mv {input} {output} && chmod +x {output}'
-
-rule get_mafft:
-    input:
-        HTTP.remote(
-            'mafft.cbrc.jp/alignment/software/mafft-7.407-linux.tgz',
-            insecure=True, allow_redirects=True)
-    output:
-        'bin/mafft-linux64/mafft.bat'
-    shell:
-        'tar xfvz {input} -C bin'
-
-rule get_notung:
-    input:
-        HTTP.remote(
-            'goby.compbio.cs.cmu.edu/Notung/Notung-2.9.zip',
-            insecure=True)
-    output:
-        'bin/Notung-2.9/Notung-2.9.jar'
-    shell:
-        'unzip {input} -d bin'
+        tree_tsv="preprocessed_data/eggNOG_tree.tsv",
+        levels_only_tsv='preprocessed_data/eggNOG_tree.levels_only.tsv',
+        members_tsv="preprocessed_data/eggNOG_level_members.tsv",
+        species_txt='preprocessed_data/eggNOG_species.txt',
+        tree_nhx="preprocessed_data/eggNOG_tree.levels_only.nhx",
+        species_tree = 'preprocessed_data/eggNOG_species_tree.nw'
