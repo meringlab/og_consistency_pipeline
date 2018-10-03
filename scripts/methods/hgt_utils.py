@@ -15,7 +15,6 @@ from .utils import data_sources as ds
 from .utils import file_utils as fu
 
 V4_PICKLE_DIR = os.path.join(ds.EGGNOG_OUTPUT,'pickles')
-V4_FASTA_DIR = ds.EGGNOGv4_FASTA_DIR
 
 PICKLE_PROTOCOL=2
 PICKLE_NOG_EXT = "nogINT.setProteinINT.pkl2"
@@ -79,7 +78,7 @@ def load_eggNOG_protein_names_pickle():
     sys.stderr.write("Starting to load protein names\n")
     t_start = time.clock()
     names_pickle_file = os.path.join(
-        V4_PICKLE_DIR,"proteinINT.tupleSpeciesINT_ShortnameSTR.pkl2")
+        ds.EGGNOG_OUTPUT,"proteinINT.tupleSpeciesINT_ShortnameSTR.pkl")
     protein_names = read_pickle(names_pickle_file)
     t_end = time.clock()
     sys.stderr.write("Finished loading protein names in %.2f s\n"%(t_end - t_start))
@@ -368,7 +367,7 @@ def load_eggNOG_data(max_level):
     
     return  (protein_nog_mapping , nog_protein_mapping , protein_name_mapping)
 
-def get_protein_fasta(protein_query_dict,header_format=None):
+def get_protein_fasta(protein_query_dict,fasta_dir,header_format=None):
     """
     method to retrieve the fasta sequences of all proteins in the
     query dictionary.
@@ -385,7 +384,7 @@ def get_protein_fasta(protein_query_dict,header_format=None):
     
     for species_id in protein_query_dict:
         
-        fasta_file = "%s/%s.fa"%(V4_FASTA_DIR,species_id)
+        fasta_file = "%s/%s.fa"%(fasta_dir,species_id)
         
         protein_set = protein_query_dict[species_id]
         
@@ -426,7 +425,7 @@ def get_protein_fasta(protein_query_dict,header_format=None):
                     
     return fasta_entries
 
-def get_species_fasta(species_id):
+def get_species_fasta(species_id,fasta_dir):
     """
     get all fasta sequences from the input species
     
@@ -434,7 +433,7 @@ def get_species_fasta(species_id):
     
     """
     fasta_entries = {}
-    fasta_file = "%s/%s.fa"%(V4_FASTA_DIR,species_id)
+    fasta_file = "%s/%s.fa"%(fasta_dir,species_id)
     
     current_protein = None
     with open(fasta_file) as f:
@@ -452,7 +451,7 @@ def get_species_fasta(species_id):
                 
     return fasta_entries
 
-def get_level_fasta(level_id):
+def get_level_fasta(level_id, fasta_dir):
     """
     get all fasta sequences from all species in at the input level
     
@@ -468,7 +467,7 @@ def get_level_fasta(level_id):
     
     level_fasta = {}
     for species_id in level_species[level_id]:
-        level_fasta[species_id] = get_species_fasta(species_id)
+        level_fasta[species_id] = get_species_fasta(species_id,fasta_dir)
 
     t_end = time.clock()
     sys.stderr.write("Finished loading FASTA data in %.2f s\n"%(t_end-t_start))

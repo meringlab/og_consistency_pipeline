@@ -181,3 +181,44 @@ rule build_eggNOG_tree:
         with open(output.species_txt,'w') as f:
             for tax_id in all_species:
                 f.write('%s\n'%tax_id)
+
+rule protein_names:
+    input:
+        protein_names_txt=config['protein_names_txt']
+    output:
+        protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
+    run:
+        import pickle
+        protein_dict = {}
+        
+        with open(input.protein_names_txt, 'r') as f:
+            for line in f:
+                # e.g. 394.NGR_c00010	1
+                protein_name, protein_id = line.strip().split('\t')
+                
+                # get protein species and shortname
+                separator_idx = protein_name.find('.')
+                assert(separator_idx != -1)
+                
+                # filter speciesID, e.g. 394
+                protein_species = protein_name[:separator_idx]
+                assert(protein_species.isdigit())
+                protein_species = int(protein_species)
+                
+                # if args.filter_species is not None:
+                #     if protein_species not in filter_species:
+                #         continue
+                
+                # filter shortname, e.g. NGR_c00010
+                protein_short = protein_name[separator_idx+1:]
+                
+                # filter proteinID, e.g. 1
+                assert(protein_id.isdigit())
+                protein_id = int(protein_id)
+                
+                # fill dictionary,  e.g. [1] = (394,NGR_c00010)
+                protein_dict[protein_id] = (protein_species,protein_short)
+        
+        # 2. Pickle protein dictionary
+        with open(output.protein_names_pickle,'wb') as pfile:
+            pickle.dump(protein_dict,pfile)

@@ -100,7 +100,6 @@ def join_solutions(higher_level, output_dir, input_definition,
     
     # pre-loading data
     protein_names = hgt_utils.load_eggNOG_protein_names_pickle()
-    protein_fasta = hgt_utils.get_level_fasta(higher_level)
 
     # load og definition
     protein_nogs, nog_proteins = hgt_utils.load_join_data(higher_level, output_dir, input_definition)

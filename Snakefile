@@ -153,4 +153,5 @@ rule preprocess_data:
         members_tsv="preprocessed_data/eggNOG_level_members.tsv",
         species_txt='preprocessed_data/eggNOG_species.txt',
         tree_nhx="preprocessed_data/eggNOG_tree.levels_only.nhx",
-        species_tree = 'preprocessed_data/eggNOG_species_tree.nw'
+        species_tree = 'preprocessed_data/eggNOG_species_tree.nw',
+        protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'

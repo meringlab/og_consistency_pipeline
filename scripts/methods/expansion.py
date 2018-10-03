@@ -12,7 +12,7 @@ from .utils import data_sources as ds
 from .utils import eggNOG_utils as eu
 from .utils import file_utils as fu
 
-from .hgt_utils import get_protein_fasta, load_v4clades
+from .hgt_utils import load_v4clades
 
 class ExpandedNOG:
     # 'Class representing an expanded NOG'

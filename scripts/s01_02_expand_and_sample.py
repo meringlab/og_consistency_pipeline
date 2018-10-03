@@ -33,7 +33,7 @@ def write_inconsistencies(path_tsv, inconsistencies):
             for inconsistent_nog in sorted(inconsistencies[nog_id]):
                 f.write('%d\t%d\n'%(nog_id,inconsistent_nog))
 
-def expand_and_sample(higher_level,output_dir, input_definition,
+def expand_and_sample(higher_level,output_dir, input_definition,input_fasta,
                       sample_no,sample_size,sample_method,random_seed,
                       default_action, tree_limit, verbose,
                       tree_tsv, default_tsv, inconsistent_tsv):
@@ -45,7 +45,7 @@ def expand_and_sample(higher_level,output_dir, input_definition,
     
     # pre-loading data
     protein_names = hgt_utils.load_eggNOG_protein_names_pickle()
-    protein_fasta = hgt_utils.get_level_fasta(higher_level)
+    protein_fasta = hgt_utils.get_level_fasta(higher_level, input_fasta)
 
     # define sampling parameters
     random.seed(random_seed)
@@ -206,6 +206,7 @@ if __name__ == '__main__':
     expand_and_sample(higher_level=int(snakemake.wildcards.level_id),
                       output_dir=snakemake.config['output_dir'],
                       input_definition=snakemake.config['input_dir'],
+                      input_fasta=snakemake.config['fasta_dir'],
                       random_seed=snakemake.params.random_seed,
                       sample_no=snakemake.params.sample_no,
                       sample_size=snakemake.params.sample_size,
