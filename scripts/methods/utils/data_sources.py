@@ -13,9 +13,3 @@ from os.path import join
 
 #computed eggNOG reference files
 EGGNOG_OUTPUT = "preprocessed_data"
-
-#eggNOG clades
-EGGNOG_CLADES = join(EGGNOG_OUTPUT,"clades")
-
-#tool binaries
-BINARIES = "bin"

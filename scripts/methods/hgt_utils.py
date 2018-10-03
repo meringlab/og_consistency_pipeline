@@ -14,14 +14,12 @@ from .utils import eggNOG_utils as eu
 from .utils import data_sources as ds
 from .utils import file_utils as fu
 
-V4_PICKLE_DIR = os.path.join(ds.EGGNOG_OUTPUT,'pickles')
-
 PICKLE_PROTOCOL=2
 PICKLE_NOG_EXT = "nogINT.setProteinINT.pkl2"
 
-def load_v4clades(level_name,species_type=str):
+def load_v4clades(level_name,clades_dir,species_type=str):
     
-    clade_file = glob("%s/[1-9]*.%s/species_and_clades.txt"%(ds.EGGNOG_CLADES,level_name))
+    clade_file = glob("%s/[1-9]*.%s/species_and_clades.txt"%(clades_dir,level_name))
     
     assert len(clade_file) == 1,"Clade file doesn't exist: %s"%level_name
     
@@ -94,7 +92,7 @@ def load_only_nog_mapping(level_id, pickle_dir):
     
     return nog_mapping
 
-def load_eggNOG_nog_mapping(level_id, pickle_dir=V4_PICKLE_DIR, pickle_ext=PICKLE_NOG_EXT):
+def load_eggNOG_nog_mapping(level_id, pickle_dir, pickle_ext=PICKLE_NOG_EXT):
     
     pickle_file = "%d.%s"%(level_id,pickle_ext)
     pickle_path = os.path.join(pickle_dir,pickle_file)
@@ -147,7 +145,7 @@ def save_eggNOG_nog_mapping(level_id, protein_mapping, output_dir):
     
     return new_definition_pickle_path
     
-def load_join_data(higher_level, new_definition, old_definition=V4_PICKLE_DIR):
+def load_join_data(higher_level, new_definition, old_definition):
     """
     Loads the [OLD] nog definitions for the level itself
     and the immidiate leaf children. Loads the [NEW] definition 

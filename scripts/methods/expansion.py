@@ -678,7 +678,7 @@ class ExpandedNOG:
         #print("Wrote nog's level and size to: %s"%output_file)
     
     #Simple solution, protein tracking would be better    
-    def get_level_species(self, nog_species, test_lca=False):
+    def get_level_species(self, nog_species, clades_dir, test_lca=False):
         lca_level_finder = eu.eggNOG_lca_finder()
         lca_level = lca_level_finder.find_level(list(nog_species.keys()))
         
@@ -704,7 +704,7 @@ class ExpandedNOG:
         
         # Check if lca_level is a leaf level. If yes use clade definitions
         if lca_level not in self.eggNOG_dict_rev:
-            level_clades = load_v4clades(self.eggNOG_names[lca_level],species_type=int)
+            level_clades = load_v4clades(self.eggNOG_names[lca_level],clades_dir,species_type=int)
             for clade_id, clade_species in level_clades.items():
                 if clade_species & nog_species_set:
                     level_species[clade_id] = clade_species & nog_species_set
@@ -740,7 +740,7 @@ class ExpandedNOG:
         
         return len(self.find_inconsistencies()) > 0
     
-    def get_composition(self,nog_id,test_lca=True):
+    def get_composition(self,nog_id,clades_dir,test_lca=True):
         
         # assert that input is compatible with object
         assert nog_id in self.lower_nogs, "nog_id %d is not present in exNOG object"%nog_id
@@ -809,7 +809,7 @@ class ExpandedNOG:
         
         # 1. prepare level_species dict[level_id]=set([species_id])
         # [TODO] if level_cache:
-        level_species = self.get_level_species(paralogs, test_lca=test_lca)
+        level_species = self.get_level_species(paralogs, clades_dir, test_lca=test_lca)
         
         return proteins, level_species, split_species, paralogs
 

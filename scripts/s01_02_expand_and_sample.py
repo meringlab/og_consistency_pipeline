@@ -33,7 +33,8 @@ def write_inconsistencies(path_tsv, inconsistencies):
             for inconsistent_nog in sorted(inconsistencies[nog_id]):
                 f.write('%d\t%d\n'%(nog_id,inconsistent_nog))
 
-def expand_and_sample(higher_level,output_dir, input_definition,input_fasta,
+def expand_and_sample(higher_level,output_dir,
+                      input_definition,input_fasta,input_clades,
                       sample_no,sample_size,sample_method,random_seed,
                       default_action, tree_limit, verbose,
                       tree_tsv, default_tsv, inconsistent_tsv):
@@ -162,7 +163,7 @@ def expand_and_sample(higher_level,output_dir, input_definition,input_fasta,
                             continue
                     
                     # Sample inconsistency
-                    proteins, levels, splits, paralogs = exNOG.get_composition(inconsistent_nog)     
+                    proteins, levels, splits, paralogs = exNOG.get_composition(inconsistent_nog,input_clades)     
                     
                     # levels check, lca must be direct child of higher_level
                     # empty levels dictionary implies a disconnected child_level
@@ -207,6 +208,7 @@ if __name__ == '__main__':
                       output_dir=snakemake.config['output_dir'],
                       input_definition=snakemake.config['input_dir'],
                       input_fasta=snakemake.config['fasta_dir'],
+                      input_clades=snakemake.config['clades_dir'],
                       random_seed=snakemake.params.random_seed,
                       sample_no=snakemake.params.sample_no,
                       sample_size=snakemake.params.sample_size,
