@@ -161,16 +161,18 @@ rule expand_data:
     input:
         data='data.tar.gz'
     output:
-        'data/pickles/9443.nogINT.setProteinINT.pkl2',
-        'data/pickles/9604.nogINT.setProteinINT.pkl2',
-        'data/pickles/314294.nogINT.setProteinINT.pkl2'
+        'data/orthologous_groups/9443.tsv',
+        'data/orthologous_groups/9604.tsv',
+        'data/orthologous_groups/314294.tsv'
     shell:
         "tar -xzf data.tar.gz"
         
-rule test_data:
+rule generate_test_data:
     input:
         rules.preprocess_data.input,
         rules.expand_data.output
+    params:
+        random_samples=100
     output:
         'test_data/9443.tsv',
         'test_data/9604.tsv',

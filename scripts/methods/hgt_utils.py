@@ -17,6 +17,14 @@ from .utils import file_utils as fu
 PICKLE_PROTOCOL=2
 PICKLE_NOG_EXT = "nogINT.setProteinINT.pkl2"
 
+def read_tsv_definition(tsv_path):
+    nogs = defaultdict(set)
+    with open(tsv_path) as f:
+        for line in f:
+            nog_id,nog_proteins = line.rstrip().split()
+            nogs[int(nog_id)].update(int(x) for x in nog_proteins.split(','))
+    return nogs
+
 def load_v4clades(level_name,clades_dir,species_type=str):
     
     clade_file = glob("%s/[1-9]*.%s/species_and_clades.txt"%(clades_dir,level_name))
@@ -92,13 +100,16 @@ def load_only_nog_mapping(level_id, pickle_dir):
     
     return nog_mapping
 
-def load_eggNOG_nog_mapping(level_id, pickle_dir, pickle_ext=PICKLE_NOG_EXT):
-    
-    pickle_file = "%d.%s"%(level_id,pickle_ext)
-    pickle_path = os.path.join(pickle_dir,pickle_file)
-    
+def load_eggNOG_nog_mapping(level_id, pickle_dir, pickle_ext=PICKLE_NOG_EXT, tsv_format=False):
+        
     # [nog_id]:set([protein_id])
-    nog_mapping = read_pickle(pickle_path)
+    if tsv_format:
+        tsv_path = os.path.join(pickle_dir,'%d.tsv'%level_id)
+        nog_mapping = read_tsv_definition(tsv_path)
+    else:
+        pickle_file = "%d.%s"%(level_id,pickle_ext)
+        pickle_path = os.path.join(pickle_dir,pickle_file)
+        nog_mapping = read_pickle(pickle_path)
     
     protein_mapping = defaultdict(dict)
     for nog_id, nog_proteins in nog_mapping.items():
@@ -145,7 +156,7 @@ def save_eggNOG_nog_mapping(level_id, protein_mapping, output_dir):
     
     return new_definition_pickle_path
     
-def load_join_data(higher_level, new_definition, old_definition):
+def load_join_data(higher_level, new_definition, old_definition, tsv_format=False):
     """
     Loads the [OLD] nog definitions for the level itself
     and the immidiate leaf children. Loads the [NEW] definition 
@@ -171,7 +182,7 @@ def load_join_data(higher_level, new_definition, old_definition):
     protein_mapping = dict()
     
     # load yourself from old definition
-    proteins, nogs = load_eggNOG_nog_mapping(higher_level, old_definition)
+    proteins, nogs = load_eggNOG_nog_mapping(higher_level, old_definition, tsv_format=tsv_format)
     protein_mapping[higher_level] = proteins
     nog_mapping[higher_level] = nogs
     
@@ -181,13 +192,13 @@ def load_join_data(higher_level, new_definition, old_definition):
         level_id = int(node.name)
         
         if node.is_leaf():
-            proteins, nogs = load_eggNOG_nog_mapping(level_id, old_definition)
+            proteins, nogs = load_eggNOG_nog_mapping(level_id, old_definition, tsv_format=tsv_format)
             protein_mapping[level_id] = proteins
             nog_mapping[level_id] = nogs
         else:
             for child in node.traverse():
                 child_id = int(child.name)
-                proteins, nogs = load_eggNOG_nog_mapping(child_id, new_definition)
+                proteins, nogs = load_eggNOG_nog_mapping(child_id, new_definition, tsv_format=tsv_format)
                 protein_mapping[child_id] = proteins
                 nog_mapping[child_id] = nogs    
             

@@ -10,18 +10,18 @@ from methods import hgt_utils
 if __name__ == '__main__':
     
     print("# Starting test data generation")
-    input_dir = 'data/pickles'
+    input_dir = 'data/orthologous_groups'
     assert os.path.exists(input_dir)
     output_dir = snakemake.config['input_dir'] # actual test data input for the pipeline
     
     print('# Loading definition')
-    protein_nogs, nog_proteins = hgt_utils.load_join_data(9443, output_dir , input_dir)
+    protein_nogs, nog_proteins = hgt_utils.load_join_data(9443, output_dir , input_dir, tsv_format=True)
     protein_names = hgt_utils.load_eggNOG_protein_names_pickle()
 
     print('# Sampling nogs')
     nog_level = 9604 # start with homNOG
     random.seed(1)
-    random_nogs = random.sample(list(nog_proteins[9604]),100)
+    random_nogs = random.sample(list(nog_proteins[9604]),snakemake.params['random_samples'])
 
     print('# Expanding nogs')
     from methods import expansion
