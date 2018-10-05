@@ -18,30 +18,49 @@
 # version:  0.3 [2018-09-27]
 
 from os.path import join
-from ete3 import Tree
-
+from collections import defaultdict
 # to download tool binaries
 from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
 HTTP = HTTPRemoteProvider()
 
 configfile: 'config.yaml'
 
+level_hierarchy = None
+
+def read_level_hierarchy():
+    # returns level hierarchy as dictionary {parent -> children}
+    species = set()
+    with open(config['species_names']) as f:
+        for line in f:
+            l = line.rstrip().split('\t')
+            species.add(l[0])
+    
+    hierarchy = defaultdict(list)
+    with open(config['level_hierarchy']) as f:
+        for line in f:
+            node, parent = line.rstrip().split()
+            if node in species:
+                continue
+            hierarchy[parent].append(node)
+    return hierarchy
+
 def get_children_paths(wildcards):
+    # returns location of children levels, using input_dir if leaf (no sub-levels)
     children_paths = []
 
-    # read level hierarchy
-    t = Tree(config['level_hierarchy'],format=8)
-    node = t.search_nodes(name=wildcards.level_id)
-    assert len(node), 'level_id %s not found in level hiearchy!'%wildcards.level_id
-    node = node[0]
+    global level_hierarchy
+    if level_hierarchy is None:
+        level_hierarchy = read_level_hierarchy()
+    assert wildcards.level_id in level_hierarchy, 'level_id %s not found in level hiearchy!'%wildcards.level_id
 
     # return children location
-    for child in node.get_children():
-        child_id = int(child.name)
-        if child.is_leaf():
-            children_paths.append(join(config['input_dir'],'%d.tsv'%child_id))
+    for child_id in level_hierarchy[wildcards.level_id]:
+        if child_id in level_hierarchy:
+            # inner level
+            children_paths.append(join(config['consistent_ogs'],'%s.tsv'%child_id))
         else:
-            children_paths.append(join(config['consistent_ogs'],'%d.tsv'%child_id))
+            # leaf level
+            children_paths.append(join(config['input_dir'],'%s.tsv'%child_id))
 
     return children_paths
 
@@ -144,7 +163,10 @@ rule expand_data:
     output:
         'data/pickles/9443.nogINT.setProteinINT.pkl2',
         'data/pickles/9604.nogINT.setProteinINT.pkl2',
-        'data/pickles/314294.nogINT.setProteinINT.pkl2'
+        'data/pickles/314294.nogINT.setProteinINT.pkl2',
+        # TODO: add config data here? or eliminate this rule?
+        # i.e. archive should be expanded here (NOTUNG keeps example data within..)
+        # can a rule point at stuff within an archive? or just config perhaps?
     shell:
         "tar -xzf data.tar.gz"
         
