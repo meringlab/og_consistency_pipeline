@@ -163,10 +163,7 @@ rule expand_data:
     output:
         'data/pickles/9443.nogINT.setProteinINT.pkl2',
         'data/pickles/9604.nogINT.setProteinINT.pkl2',
-        'data/pickles/314294.nogINT.setProteinINT.pkl2',
-        # TODO: add config data here? or eliminate this rule?
-        # i.e. archive should be expanded here (NOTUNG keeps example data within..)
-        # can a rule point at stuff within an archive? or just config perhaps?
+        'data/pickles/314294.nogINT.setProteinINT.pkl2'
     shell:
         "tar -xzf data.tar.gz"
         

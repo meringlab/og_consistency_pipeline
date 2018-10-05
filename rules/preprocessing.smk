@@ -4,7 +4,7 @@ from os.path import join
 
 rule build_eggNOG_species_tree:
     input:
-        guiding_tree = config['guiding_tree'],
+        guiding_tree = config['species_tree'],
         species_txt = 'preprocessed_data/eggNOG_species.txt'
     output:
         species_tree = 'preprocessed_data/eggNOG_species_tree.nw'
@@ -65,133 +65,80 @@ rule build_eggNOG_nhx:
         print(t.get_ascii(attributes=['name','nog_prefix']))
         t.write(format=8,outfile=output.tree_nhx,format_root_node=True,features=['nog_prefix'])
 
-rule build_eggNOG_names:
+rule build_eggNOG_files:
     input:
-        level_names=config['level_names'],
+        level_tree=config['level_hierarchy'],
         species_names=config['species_names'],
-        tree_tsv="preprocessed_data/eggNOG_tree.tsv"
-    output:
-        name_tsv="preprocessed_data/eggNOG_names.tsv"
-    run:
-        names = {}
-        
-        # load level names
-        with open(input.level_names) as f:
-            for line in f:
-                if line.startswith('#'):
-                    continue
-                l = line.rstrip().split('\t')
-                level_id = l[0]
-                level_name = l[1]
-                level_size = int(l[3])
-                if level_size == 1:
-                    assert level_name == 'cryNOG', 'another level with a single species found:%s'%l
-                    continue
-                
-                if 'newSublevelOf' in level_name:
-                    level_name = level_name[len('newSublevelOf'):]
-                names[level_id] = level_name
-        
-        # load compact species names
-        with open(input.species_names) as f:
-            for line in f:
-                if line.startswith('#'):
-                    continue
-                l = line.rstrip().split('\t')
-                species_id = l[0]
-                names[species_id] = l[3]
-
-        # check id match
-        with open(input.tree_tsv) as f:
-            tree = dict((line.rstrip().split('\t')) for line in f)
-            for tax_id in names:
-                if tax_id != '1':
-                    assert tax_id in tree, 'Missing name in tree: %s [%s]'%(tax_id,names[tax_id])
-        
-        # write out
-        with open(output.name_tsv,'w') as f:
-            for tax_id, tax_name in names.items():
-                f.write('%s\t%s\n'%(tax_id,tax_name))
-
-rule build_eggNOG_tree:
-    input:
-        level_definition=config['level_definition']
+        level_names=config['level_names']
     output:
         tree_tsv="preprocessed_data/eggNOG_tree.tsv",
         levels_only_tsv='preprocessed_data/eggNOG_tree.levels_only.tsv',
         members_tsv="preprocessed_data/eggNOG_level_members.tsv",
-        species_txt='preprocessed_data/eggNOG_species.txt'
+        species_txt='preprocessed_data/eggNOG_species.txt',
+        names='preprocessed_data/eggNOG_names.tsv'
     run:
-        # read in all the level species
-        levels = {}
-        with open(input.level_definition) as f:
-            for line in f:
-                if line.startswith('#'):
-                    continue
-                l = line.rstrip().split('\t')
-                tax_id = l[0]
-                tax_name = l[1]
-                member_species = {x for x in l[-1].split(' ')}
-                
-                if len(member_species) == 1:
-                    assert tax_name == 'cryNOG', 'another level with a single species found:%s'%l
-                    continue
-                
-                levels[tax_id] = member_species
+        def read_tsv_dict(tsv_file):
+            with open(tsv_file) as f:
+                return dict(line.rstrip().split('\t') for line in f)
         
-        # find minimum superset to construct tree
-        level_tree = {}
-        for tax_id, member_species in levels.items():
-            overlap = {}
-            for other_id in levels:
-                if tax_id != other_id:
-                    other_species = levels[other_id]
-                    if member_species.issubset(other_species):
-                        difference = other_species - member_species
-                        overlap[other_id] = len(difference)
+        #load data
+        eggNOG_species = read_tsv_dict(input.species_names)
+        eggNOG_tree = read_tsv_dict(input.level_tree)
+        eggNOG_levels= read_tsv_dict(input.level_names)
+        
+        #build eggNOG level sets of memeber species
+        eggNOG_level_sets = defaultdict(set)
+        eggNOG_level_sets['1'].update(eggNOG_species)
+
+        for species_id in eggNOG_species:
+            assert species_id in eggNOG_tree, 'Species {id}[{name}] not found in hierarchy!'.format(
+                id=species_id,
+                name=eggNOG_species[species_id]
+            )
             
-            #overlap = Counter({x:len(member_species & y) for x,y in levels.items() if tax_id != y and member_species.issubset(y)})
-            if overlap:
-                overlap = Counter(overlap)
-                minimum_superset = overlap.most_common()[-1]
-                level_tree[tax_id] = minimum_superset[0] # link to higher level, e.g. biNOG -> meNOG
-        
-        level_tree_w_species = dict(level_tree)
-        
-        # attach the species_ids to tree
-        all_species = set.union(*levels.values())
-        for species_id in all_species:
-            species_levels = Counter({x:len(y) for x,y in levels.items() if species_id in y})
-            leaf_level = species_levels.most_common()[-1]
-            level_tree_w_species[species_id] = leaf_level[0]
+            next_level = eggNOG_tree[species_id]
+            assert next_level in eggNOG_levels, 'Unknown level {id} not found in level names'.format(
+                id=next_level
+            )
+            
+            while next_level != '1':
+                eggNOG_level_sets[next_level].add(species_id)
+                next_level = eggNOG_tree[next_level]
         
         # write out
         with open(output.tree_tsv,'w') as f:
-            for low_id, high_id in level_tree_w_species.items():
+            for low_id, high_id in eggNOG_tree.items():
                 f.write('%s\t%s\n'%(low_id,high_id))
                 
         with open(output.levels_only_tsv,'w') as f:
-            for low_id, high_id in level_tree.items():
-                f.write('%s\t%s\n'%(low_id,high_id))
+            for low_id, high_id in eggNOG_tree.items():
+                if low_id in eggNOG_levels:
+                    f.write('%s\t%s\n'%(low_id,high_id))
                 
         with open(output.members_tsv,'w') as f:
-            for tax_id, tax_members in levels.items():
+            for tax_id, tax_members in eggNOG_level_sets.items():
                 f.write('%s\t%d\t%s\n'%(tax_id,len(tax_members),','.join(tax_members)))
                 
         with open(output.species_txt,'w') as f:
-            for tax_id in all_species:
+            for tax_id in eggNOG_species:
                 f.write('%s\n'%tax_id)
-
-rule protein_names:
+        
+        with open(output.names,'w') as f:
+            for tax_id,tax_name in eggNOG_species.items():
+                f.write('%s\t%s\n'%(tax_id,tax_name))
+            for tax_id,tax_name in eggNOG_levels.items():
+                f.write('%s\t%s\n'%(tax_id,tax_name))
+            
+rule pickle_protein_names:
     input:
-        protein_names_txt=config['protein_names_txt']
+        protein_names=config['protein_names']
     output:
         protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
     run:
         import pickle
         protein_dict = {}
         
-        with open(input.protein_names_txt, 'r') as f:
+        with open(input.protein_names, 'r') as f:
             for line in f:
                 # e.g. 394.NGR_c00010	1
                 protein_name, protein_id = line.strip().split('\t')

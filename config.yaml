@@ -1,4 +1,5 @@
 # input directory with inconsistent OG definitions
+# OG definitions (level_id.tsv: og_name -> protein_id (integer))
 input_dir: test_data
 # general output directory
 output_dir: test_output
@@ -6,6 +7,25 @@ output_dir: test_output
 consistent_ogs: test_output/consistent_ogs
 # target taxonomic level to make consistent
 target: 9443.tsv
+
 # NCBI like taxonomy hierarchy (node -> parent)
-level_hierarchy: data/eggNOG_tree.tsv
+level_hierarchy: data/level_hierarchy.tsv
+# level names (level_id -> level_name)
+level_names: data/level_names.tsv
+
+# species names (species_id -> species_name)
+species_names: data/species_names.tsv
+# general species tree (newick format, leaf_name = species_id)
+species_tree: data/species_tree.nw
+
+# protein names (protein_name -> protein_id (integer))
+protein_names: data/protein_names.tsv
+# fasta dir (protein_name -> fasta_sequence)
+fasta_dir: data/fastafiles
+
+# clades dir
+clades_dir: data/clades
+
+
+
 
