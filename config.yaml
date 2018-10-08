@@ -5,8 +5,8 @@ input_dir: test_data
 output_dir: test_output
 # final output directory for consistent OG definitions
 consistent_ogs: test_output/consistent_ogs
-# target taxonomic level to make consistent
-target: 9443.tsv
+# target taxonomic level_id to make consistent
+target: 9443
 
 # NCBI like taxonomy hierarchy (node -> parent)
 level_hierarchy: data/level_hierarchy.tsv

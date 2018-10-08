@@ -66,7 +66,7 @@ def get_children_paths(wildcards):
 
 rule all:
     input:
-        join(config['consistent_ogs'],config['target'])
+        join(config['consistent_ogs'],'%s.tsv'%config['target'])
 
 rule join:
     input:
