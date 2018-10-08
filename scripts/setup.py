@@ -10,9 +10,9 @@ from methods import hgt_utils
 if __name__ == '__main__':
     
     print("# Starting test data generation")
-    input_dir = 'data/orthologous_groups'
+    input_dir = snakemake.input.input_dir
     assert os.path.exists(input_dir)
-    output_dir = snakemake.config['input_dir'] # actual test data input for the pipeline
+    output_dir = 'preprocessed_data/orthologous_groups'#snakemake.output.output_dir 
     
     print('# Loading definition')
     protein_nogs, nog_proteins = hgt_utils.load_join_data(9443, output_dir , input_dir, tsv_format=True)

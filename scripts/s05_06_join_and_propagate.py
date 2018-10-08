@@ -261,7 +261,7 @@ if __name__ == '__main__':
     join_solutions(
         higher_level=int(snakemake.wildcards.level_id),
         output_dir=snakemake.config['output_dir'],
-        input_definition=snakemake.config['input_dir'],
+        input_definition=snakemake.input.input_dir,#snakemake.config['input_dir'],
         input_reconciliations=snakemake.input.reconciliations,
         input_inconsistencies=snakemake.input.inconsistencies,
         input_default=snakemake.input.default_solutions,

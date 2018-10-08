@@ -1,6 +1,6 @@
 # input directory with inconsistent OG definitions
 # OG definitions (level_id.tsv: og_name -> protein_id (integer))
-input_dir: test_data
+input_dir: data/orthologous_groups
 # general output directory
 output_dir: test_output
 # final output directory for consistent OG definitions

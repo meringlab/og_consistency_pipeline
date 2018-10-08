@@ -60,7 +60,7 @@ def get_children_paths(wildcards):
             children_paths.append(join(config['consistent_ogs'],'%s.tsv'%child_id))
         else:
             # leaf level
-            children_paths.append(join(config['input_dir'],'%s.tsv'%child_id))
+            children_paths.append(join('preprocessed_data/orthologous_groups','%s.tsv'%child_id))
 
     return children_paths
 
@@ -70,7 +70,7 @@ rule all:
 
 rule join:
     input:
-        parent=join(config['input_dir'],'{level_id}.tsv'),
+        input_dir=directory('preprocessed_data/orthologous_groups'),
         children=get_children_paths,
         reconciliations=join(config['output_dir'],'reconciliations/{level_id}.tsv'),
         default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
@@ -120,7 +120,7 @@ rule tree_building:
 
 rule expansion:
     input:
-        join(config['input_dir'],'{level_id}.tsv'),
+        input_dir=directory('preprocessed_data/orthologous_groups'),
         children=get_children_paths
     output:
         samples=join(config['output_dir'],'samples/{level_id}.tsv'),
@@ -157,25 +157,26 @@ rule preprocess_data:
         species_tree = 'preprocessed_data/eggNOG_species_tree.nw',
         protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
 
-rule expand_data:
-    input:
-        data='data.tar.gz'
-    output:
-        'data/orthologous_groups/9443.tsv',
-        'data/orthologous_groups/9604.tsv',
-        'data/orthologous_groups/314294.tsv'
-    shell:
-        "tar -xzf data.tar.gz"
+# rule expand_data:
+#     input:
+#         data='data.tar.gz'
+#     output:
+#         'data/orthologous_groups/9443.tsv',
+#         'data/orthologous_groups/9604.tsv',
+#         'data/orthologous_groups/314294.tsv'
+#     shell:
+#         "tar -xzf data.tar.gz"
         
 rule generate_test_data:
     input:
-        rules.preprocess_data.input,
-        rules.expand_data.output
+        preprocessed_data=rules.preprocess_data.input,
+        input_dir=directory(config['input_dir'])
     params:
         random_samples=100
     output:
-        'test_data/9443.tsv',
-        'test_data/9604.tsv',
-        'test_data/314294.tsv'
+        #output_dir=directory('preprocessed_data/orthologous_groups'),
+        o1='preprocessed_data/orthologous_groups/9443.tsv',
+        o2='preprocessed_data/orthologous_groups/9604.tsv',
+        o3='preprocessed_data/orthologous_groups/314294.tsv'
     script:
         'scripts/setup.py'
