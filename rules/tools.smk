@@ -1,3 +1,7 @@
+# rules to download the tools for gene tree building and reconciliation
+from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
+HTTP = HTTPRemoteProvider()
+
 rule get_fasttree:
     input:
         HTTP.remote(

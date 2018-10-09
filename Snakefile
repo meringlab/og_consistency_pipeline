@@ -19,9 +19,6 @@
 
 from os.path import join
 from collections import defaultdict
-# to download tool binaries
-from snakemake.remote.HTTP import RemoteProvider as HTTPRemoteProvider
-HTTP = HTTPRemoteProvider()
 
 configfile: 'config.yaml'
 
