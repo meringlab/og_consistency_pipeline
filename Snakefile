@@ -89,7 +89,7 @@ rule join:
         default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
         inconsistencies=join(config['output_dir'],'inconsistencies/{level_id}.tsv')
     output:
-        consistent_ogs=join(config['consistent_ogs'],'{level_id}.tsv'),
+        consistent_ogs=join(config['output_dir'],'new_definition/{level_id}.tsv'),
         new_singletons=join(config['output_dir'],'new_singletons/{level_id}.tsv')
     params:
         majority_vote_threshold=0.5
@@ -159,16 +159,6 @@ rule download_tools:
         'bin/FastTree',
         'bin/mafft-linux64/mafft.bat',
         'bin/Notung-2.9/Notung-2.9.jar'
-
-# rule expand_data:
-#     input:
-#         data='data.tar.gz'
-#     output:
-#         'data/orthologous_groups/9443.tsv',
-#         'data/orthologous_groups/9604.tsv',
-#         'data/orthologous_groups/314294.tsv'
-#     shell:
-#         "tar -xzf data.tar.gz"
 
 include: 'rules/pickle.smk'        
 rule generate_test_data:

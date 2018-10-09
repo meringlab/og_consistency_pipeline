@@ -267,5 +267,5 @@ if __name__ == '__main__':
         input_default=snakemake.input.default_solutions,
         cpu_cores=snakemake.threads,
         majority_vote_threshold=snakemake.params.majority_vote_threshold,
-        output_consistent=snakemake.config['consistent_ogs'],
+        output_consistent=os.path.dirname(snakemake.output.consistent_ogs),
         output_singletons=snakemake.output.new_singletons)

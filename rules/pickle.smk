@@ -58,18 +58,22 @@ rule pickle_nogs:
                 
 rule reconvert_nogs:
     input:
-        og_pickle="preprocessed_data/orthologous_groups/{level_id}.nogINT.setProteinINT.pkl2",
+        consistent_ogs=join(config['output_dir'],'new_definition/{level_id}.tsv'),
         protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
     output:
-        og_wide_tsv="reconverted/{level_id}.tsv"
+        og_wide_tsv=join(config['consistent_ogs'],"{level_id}.tsv")
     run:
         import pickle
-        with open(input.og_pickle,'rb') as f:
-            nogs = pickle.load(f)
             
         with open(input.protein_names_pickle,'rb') as f:
             protein_names = pickle.load(f)
-        
+
+        nogs = defaultdict(set)
+        with open(input.consistent_ogs) as f:
+            for line in f:
+                nog_id,protein_id = line.rstrip().split()
+                nogs[int(nog_id)].add(int(protein_id))
+            
         with open(output.og_wide_tsv,'w') as g:
             for i, nog_id in enumerate(sorted(nogs)):
                 nog_str = 'NOG%06d'%i
