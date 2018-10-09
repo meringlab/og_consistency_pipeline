@@ -67,10 +67,23 @@ def get_children_paths(wildcards):
 rule all:
     input:
         join(config['consistent_ogs'],'%s.tsv'%config['target'])
+        
+include: 'rules/preprocessing.smk'
+rule preprocess_data:
+    # using included rules/preprocessing.smk
+    input:
+        tree_tsv="preprocessed_data/eggNOG_tree.tsv",
+        levels_only_tsv='preprocessed_data/eggNOG_tree.levels_only.tsv',
+        members_tsv="preprocessed_data/eggNOG_level_members.tsv",
+        species_txt='preprocessed_data/eggNOG_species.txt',
+        tree_nhx="preprocessed_data/eggNOG_tree.levels_only.nhx",
+        species_tree = 'preprocessed_data/eggNOG_species_tree.nw',
+        protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
 
 rule join:
     input:
-        input_dir=directory('preprocessed_data/orthologous_groups'),
+        rules.preprocess_data.input,
+        parent=join('preprocessed_data/orthologous_groups','{level_id}.tsv'),
         children=get_children_paths,
         reconciliations=join(config['output_dir'],'reconciliations/{level_id}.tsv'),
         default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
@@ -120,7 +133,9 @@ rule tree_building:
 
 rule expansion:
     input:
-        input_dir=directory('preprocessed_data/orthologous_groups'),
+        rules.preprocess_data.input,
+        parent=join('preprocessed_data/orthologous_groups','{level_id}.tsv'),
+        #input_dir=directory('preprocessed_data/orthologous_groups'),
         children=get_children_paths
     output:
         samples=join(config['output_dir'],'samples/{level_id}.tsv'),
@@ -145,18 +160,6 @@ rule download_tools:
         'bin/mafft-linux64/mafft.bat',
         'bin/Notung-2.9/Notung-2.9.jar'
 
-include: 'rules/preprocessing.smk'
-rule preprocess_data:
-    # using included rules/preprocessing.smk
-    input:
-        tree_tsv="preprocessed_data/eggNOG_tree.tsv",
-        levels_only_tsv='preprocessed_data/eggNOG_tree.levels_only.tsv',
-        members_tsv="preprocessed_data/eggNOG_level_members.tsv",
-        species_txt='preprocessed_data/eggNOG_species.txt',
-        tree_nhx="preprocessed_data/eggNOG_tree.levels_only.nhx",
-        species_tree = 'preprocessed_data/eggNOG_species_tree.nw',
-        protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
-
 # rule expand_data:
 #     input:
 #         data='data.tar.gz'
@@ -166,17 +169,10 @@ rule preprocess_data:
 #         'data/orthologous_groups/314294.tsv'
 #     shell:
 #         "tar -xzf data.tar.gz"
-        
+
+include: 'rules/pickle.smk'        
 rule generate_test_data:
     input:
-        preprocessed_data=rules.preprocess_data.input,
-        input_dir=directory(config['input_dir'])
-    params:
-        random_samples=100
-    output:
-        #output_dir=directory('preprocessed_data/orthologous_groups'),
-        o1='preprocessed_data/orthologous_groups/9443.tsv',
-        o2='preprocessed_data/orthologous_groups/9604.tsv',
-        o3='preprocessed_data/orthologous_groups/314294.tsv'
-    script:
-        'scripts/setup.py'
+        'reconverted/9443.tsv',
+        'reconverted/9604.tsv',
+        'reconverted/314294.tsv'
