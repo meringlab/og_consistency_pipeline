@@ -77,7 +77,7 @@ def apply_solutions(job, debug=False):
         t_start = time.clock()
     
     # 2. Define order of application for complex decisions         
-    if len(complex_decisions) > 1:
+    if len(complex_decisions) > 1 and debug:
         # [TODO] one coherent action should be taken (merge or split)
         # i.e. all remaining reconciliations must agree
         print(len(complex_decisions), exNOG.input_id)

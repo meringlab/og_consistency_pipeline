@@ -163,9 +163,10 @@ def join_solutions(higher_level, output_dir, input_definition,
         
     new_singletons = defaultdict(set) # dict[level]:set(singletons)
     singleton_reference = defaultdict(dict)
-        
+    
+    sys.stderr.write('Updating old definition.. \n')
     # 1. remove new singletons for every level in old definiton
-    for consistent_id, consistent_definiton, consistent_singletons, nog_history in consistent_nogs:
+    for consistent_id, consistent_definiton, consistent_singletons, nog_history in tqdm(consistent_nogs):
         for level_id in consistent_singletons:
             old_definition = protein_nogs[level_id]
             for protein_id in consistent_singletons[level_id]:
@@ -243,11 +244,13 @@ def join_solutions(higher_level, output_dir, input_definition,
     #     for consistent_id in level_history:
     #         for old_id, new_ids in level_history[consistent_id].items():
     #             f.write('%d\t%d\t%s\n'%(consistent_id,old_id,','.join([str(x) for x in new_ids])))
-
+    
+    sys.stderr.write('Writing new definition.. \n')
     write_protein_nogs(output_consistent, protein_nogs)
     write_singletons(output_singletons, new_singletons)
     
     # test consistency
+    sys.stderr.write('Testing new definition.. \n')
     lower_levels = list(eggNOG_children[higher_level])
     test.test_consistency([higher_level],lower_levels,protein_nogs)
     while lower_levels:
