@@ -13,9 +13,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# author:   Davide Heller
-# email:    davide.heller@imls.uzh.ch
-# version:  0.3 [2018-09-27]
+__author__ = 'Davide Heller'
+__email__ = 'davide.heller@imls.uzh.ch'
+__license__ = 'GPLv3+'
+__version__ = '0.4'
 
 from os.path import join
 from collections import defaultdict
