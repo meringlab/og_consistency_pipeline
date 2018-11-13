@@ -22,6 +22,8 @@ Input files are specified through the configuration file `config.yaml`, with par
 
 The software has been developed and tested on Linux (Ubuntu 12/16/18.04). Other Unix systems might be suitable as well but binaries will have to be adapted accordingly.
 
+**NOTE: If you cloned the repository prior to the 13.11.2018, please make a fresh copy as we applied [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) to remove the example data from the repository history (now found under the [release section](https://github.com/meringlab/og_consistency_pipeline/releases))**
+
 # Installation
 
 The easiest way to use the pipeline is to create a python3 environment with the [Anaconda/Miniconda](https://www.anaconda.com) distribution (installation instructions [here](https://conda.io/docs/user-guide/install/index.html)). Assuming that the distrution has been installed, the following commands create a new environment and install all the required dependencies:
