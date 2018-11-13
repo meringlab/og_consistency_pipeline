@@ -18,7 +18,7 @@ The current version of the pipeline (v0.4) is a [Snakemake](https://snakemake.re
 
 The binaries of the three tools are downloaded automatically using the snakemake rules specified in `rules/tools.smk`. 
 
-Input files are specified through the configuration file `config.yaml`, with parameters explained therein. As a small example we included a dataset from the [eggNOG database](http://eggnog.embl.de) in `data.tar.gz`.
+Input files are specified through the configuration file `config.yaml`, with parameters explained therein. As a small example we provide a dataset from the [eggNOG database](http://eggnog.embl.de) in the [release section](https://github.com/meringlab/og_consistency_pipeline/releases) under `data.tar.gz`.
 
 The software has been developed and tested on Linux (Ubuntu 12/16/18.04). Other Unix systems might be suitable as well but binaries will have to be adapted accordingly.
 
@@ -53,6 +53,7 @@ For the 15 member species of the Primates level (see `data/9443.primates.species
 
 To run the Snakemake workflow: 
 
+1. download the example dataset `data.tar.gz` from the [release section](https://github.com/meringlab/og_consistency_pipeline/releases)
 1. expand the example dataset with `tar -xzf data.tar.gz` 
 2. (opt) list the outstanding tasks with `snakemake -n` or `snakemake --dag | dot -Tsvg > dag.svg` to visualize them as SVG graph
 3. execute the tasks with `snakemake`
