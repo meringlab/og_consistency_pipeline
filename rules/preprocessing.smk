@@ -1,6 +1,5 @@
 from collections import Counter, defaultdict
 from ete3 import Tree
-from os.path import join
 
 rule build_eggNOG_species_tree:
     input:

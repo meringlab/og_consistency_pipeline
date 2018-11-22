@@ -18,7 +18,7 @@ __email__ = 'davide.heller@imls.uzh.ch'
 __license__ = 'GPLv3+'
 __version__ = '0.4'
 
-from os.path import join
+from os import path
 from collections import defaultdict
 
 configfile: 'config.yaml'
@@ -55,16 +55,16 @@ def get_children_paths(wildcards):
     for child_id in level_hierarchy[wildcards.level_id]:
         if child_id in level_hierarchy:
             # inner level
-            children_paths.append(join(config['consistent_ogs'],'%s.tsv'%child_id))
+            children_paths.append(path.join(config['consistent_ogs'],'%s.tsv'%child_id))
         else:
             # leaf level
-            children_paths.append(join('preprocessed_data/orthologous_groups','%s.tsv'%child_id))
+            children_paths.append(path.join('preprocessed_data/orthologous_groups','%s.tsv'%child_id))
 
     return children_paths
 
 rule all:
     input:
-        join(config['consistent_ogs'],'%s.tsv'%config['target'])
+        path.join(config['consistent_ogs'],'%s.tsv'%config['target'])
         
 include: 'rules/preprocessing.smk'
 rule preprocess_data:
@@ -81,14 +81,14 @@ rule preprocess_data:
 rule join:
     input:
         rules.preprocess_data.input,
-        parent=join('preprocessed_data/orthologous_groups','{level_id}.tsv'),
+        parent=path.join('preprocessed_data/orthologous_groups','{level_id}.tsv'),
         children=get_children_paths,
-        reconciliations=join(config['output_dir'],'reconciliations/{level_id}.tsv'),
-        default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
-        inconsistencies=join(config['output_dir'],'inconsistencies/{level_id}.tsv')
+        reconciliations=path.join(config['output_dir'],'reconciliations/{level_id}.tsv'),
+        default_solutions=path.join(config['output_dir'],'default_solutions/{level_id}.tsv'),
+        inconsistencies=path.join(config['output_dir'],'inconsistencies/{level_id}.tsv')
     output:
-        consistent_ogs=join(config['output_dir'],'new_definition/{level_id}.tsv'),
-        new_singletons=join(config['output_dir'],'new_singletons/{level_id}.tsv')
+        consistent_ogs=path.join(config['output_dir'],'new_definition/{level_id}.tsv'),
+        new_singletons=path.join(config['output_dir'],'new_singletons/{level_id}.tsv')
     params:
         majority_vote_threshold=0.5
     threads:
@@ -98,10 +98,10 @@ rule join:
 
 rule tree_reconciliation:
     input:
-        trees = join(config['output_dir'],'trees/{level_id}.tsv'),
+        trees = path.join(config['output_dir'],'trees/{level_id}.tsv'),
         reconciliation_software = 'bin/Notung-2.9/Notung-2.9.jar'
     output:
-        reconciliations = join(config['output_dir'],'reconciliations/{level_id}.tsv')
+        reconciliations = path.join(config['output_dir'],'reconciliations/{level_id}.tsv')
     threads:
         20 # max=20, i.e. threads = min(threads, cores)
     params:
@@ -114,12 +114,12 @@ rule tree_reconciliation:
 
 rule tree_building:
     input:
-        samples=join(config['output_dir'],'samples/{level_id}.tsv'),
+        samples=path.join(config['output_dir'],'samples/{level_id}.tsv'),
         alignment_software = 'bin/mafft-linux64/mafft.bat',
         tree_software = 'bin/FastTree'
     output:
-        trees_rooted=join(config['output_dir'],'trees/{level_id}.tsv'),
-        trees_unrooted=join(config['output_dir'],'unrooted_trees/{level_id}.tsv')
+        trees_rooted=path.join(config['output_dir'],'trees/{level_id}.tsv'),
+        trees_unrooted=path.join(config['output_dir'],'unrooted_trees/{level_id}.tsv')
     threads:
         20 # max=20, i.e. threads = min(threads, cores)
     params:
@@ -132,13 +132,13 @@ rule tree_building:
 rule expansion:
     input:
         rules.preprocess_data.input,
-        parent=join('preprocessed_data/orthologous_groups','{level_id}.tsv'),
+        parent=path.join('preprocessed_data/orthologous_groups','{level_id}.tsv'),
         #input_dir=directory('preprocessed_data/orthologous_groups'),
         children=get_children_paths
     output:
-        samples=join(config['output_dir'],'samples/{level_id}.tsv'),
-        default_solutions=join(config['output_dir'],'default_solutions/{level_id}.tsv'),
-        inconsistencies=join(config['output_dir'],'inconsistencies/{level_id}.tsv')
+        samples=path.join(config['output_dir'],'samples/{level_id}.tsv'),
+        default_solutions=path.join(config['output_dir'],'default_solutions/{level_id}.tsv'),
+        inconsistencies=path.join(config['output_dir'],'inconsistencies/{level_id}.tsv')
     params:
         random_seed = 1,
         sample_no = 20,

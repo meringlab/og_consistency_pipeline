@@ -2,7 +2,7 @@
 
 rule convert_nogs:
     input:
-        level_path = join(config['input_dir'],'{level_id}.tsv'),
+        level_path = path.join(config['input_dir'],'{level_id}.tsv'),
         protein_names = config['protein_names']
     output:
         converted_path = "preprocessed_data/converted_groups/{level_id}.tsv",
@@ -58,10 +58,10 @@ rule pickle_nogs:
     
 rule reconvert_nogs:
     input:
-        long_tsv=join(config['output_dir'],'new_definition/{level_id}.tsv'),
+        long_tsv=path.join(config['output_dir'],'new_definition/{level_id}.tsv'),
         protein_names_pickle='preprocessed_data/proteinINT.tupleSpeciesINT_ShortnameSTR.pkl'
     output:
-        wide_tsv=join(config['consistent_ogs'],'{level_id}.tsv')
+        wide_tsv=path.join(config['consistent_ogs'],'{level_id}.tsv')
     run:
         import os
         import tqdm
