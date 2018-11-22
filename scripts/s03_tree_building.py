@@ -36,6 +36,12 @@ def build_trees(higher_level,input_samples, tree_method,
     
     tree_jobs = read_samples(input_samples)
     
+    if not tree_jobs:
+        # no tree jobs found => create two empty files for snakemake
+        open(output_unrooted, 'a').close()
+        open(output_rooted, 'a').close()
+        return
+    
     if tree_method == 'ete':
         tree_method = tree_building.ete_build_workflow
     elif tree_method == 'website':

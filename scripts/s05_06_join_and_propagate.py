@@ -263,7 +263,7 @@ def join_solutions(higher_level, output_dir, input_definition,
 if __name__ == '__main__':
     join_solutions(
         higher_level=int(snakemake.wildcards.level_id),
-        output_dir=snakemake.config['output_dir'],
+        output_dir=os.path.join(snakemake.config['output_dir'],'new_definition'),
         input_definition=os.path.dirname(snakemake.input.parent),
         input_reconciliations=snakemake.input.reconciliations,
         input_inconsistencies=snakemake.input.inconsistencies,

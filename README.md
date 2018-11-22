@@ -59,6 +59,7 @@ To run the Snakemake workflow:
 1. expand the example dataset with `tar -xzf data.tar.gz` 
 2. (opt) list the outstanding tasks with `snakemake -n` or `snakemake --dag | dot -Tsvg > dag.svg` to visualize them as SVG graph
 3. execute the tasks with `snakemake`
+4. (opt) create a [snakemake report](https://snakemake.readthedocs.io/en/stable/snakefiles/reporting.html) with `snakemake --report report.html`
 
 The software will read the test dataset with 100 OGs from `data/orthologous_groups` and resolve the hierarchical inconsistencies. After workflow completion (~2 min on a single core) the consistent OG definition can be found in `test_output/consistent_ogs`. To run a larger example with the complete clustering of the 15 species, change the input parameter in the `config.yaml` file to point at `data/orthologous_groups_full`. Be aware that this will require much more time and multi-core execution is strongly reccomended (~1h using 10 cores, i.e. `snakemake --cores 10`).
 
