@@ -206,7 +206,7 @@ def expand_and_sample(higher_level,output_dir,
 
 if __name__ == '__main__':
     expand_and_sample(higher_level=int(snakemake.wildcards.level_id),
-                      output_dir=snakemake.config['output_dir'],
+                      output_dir=os.path.join(snakemake.config['output_dir'],'new_definition'),
                       input_definition=os.path.dirname(snakemake.input.parent),
                       input_fasta=snakemake.config['fasta_dir'],
                       input_clades=snakemake.config['clades_dir'],
